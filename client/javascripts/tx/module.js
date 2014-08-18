@@ -2,7 +2,6 @@ function renderHtml(txid,data) {
     $.get('/templates/tx/body.template', function(template) {
         data.TXID = txid;
         data.PAGE_TITLE = 'Transaction';
-        console.log(data);
         var html = Mustache.to_html(template, data);
         $('#htmlbody').html(html);
     });

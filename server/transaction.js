@@ -22,6 +22,7 @@ router.get('/:txid', function(clientReq, clientRes) {
                 var txSubType = respond.message.subtype;
                 respond.message.type = BurstConfig.walletConstant.transactionTypes[txType].description;
                 respond.message.subtype = BurstConfig.walletConstant.transactionTypes[txType].subtypes[txSubType].description;
+                respond.message.genesisTimestamp = BurstConfig.walletConstant;
             }
             else {
                 respond.status  = false;

@@ -1,0 +1,33 @@
+<div class="navbar">
+    <div class="navbar_back"> back </div>
+    <div class="navbar_title">
+        {{PAGE_TITLE}}
+        <span class="navbar_title_txlabel" id="navbar_tx">{{BLKID}}</span>
+    </div>
+</div>
+<div class="content" id="content">
+    Prev Block <span>{{previousBlock}}</span><br/>
+    Next Block <span>{{nextBlock}}</span><br/>
+    Block Height <span>{{height}}</span><br/>
+    Block Timestamp <span>{{timestamp}}</span><br/>
+    <br/>
+    Amount TX<span>{{totalAmountNQT}}</span><br/>
+    Number of TX <span>{{numberOfTransactions}}</span><br/>
+    Amount Fee<span>{{totalFeeNQT}}</span><br/>
+    Payload Length <span>{{payloadLength}}</span><br/>
+    <br/>
+    Generator <span>{{generatorRS}}</span><br/>
+    Reward <span>{{blockReward}}</span><br/>
+    Scoop # <span>{{scoopNum}}</span><br/>
+    Base Target <span>{{baseTarget}}</span><br/>
+    Nonce <span>{{nonce}}</span><br/>
+    <br/>
+    Gen Sig <span>{{generationSignature}}</span><br/>
+    Payload Hash <span>{{payloadHash}}</span><br/>
+    Version <span>{{version}}</span><br/>
+    <br/>
+    Transactions :
+    <div id="txList">
+
+    </div>
+</div>

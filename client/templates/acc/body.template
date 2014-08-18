@@ -1,0 +1,17 @@
+<div class="navbar">
+    <div class="navbar_back"> back </div>
+    <div class="navbar_title">
+        {{PAGE_TITLE}}
+        <span class="navbar_title_txlabel" id="navbar_tx">{{TXID}}</span>
+    </div>
+</div>
+<div class="content" id="content">
+    Account RS <span>{{accountRS}}</span><br/>
+    Account Num <span>{{account}}</span><br/>
+    <br/>
+    Balance <span>{{balanceNQT}}</span><br/>
+    Unconfirmed Balance <span>{{unconfirmedBalanceNQT}}</span><br/>
+    Mined Balance <span>{{forgedBalanceNQT}}</span><br/>
+    <br/>
+    Public Key <span>{{publicKey}}</span>
+</div>
