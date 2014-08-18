@@ -1,0 +1,73 @@
+html,body
+{
+    font-family: 'Abel';
+    font-size:14px;
+    margin:0;
+    padding:0;
+}
+
+a {
+    text-decoration: none;
+}
+
+pre {
+    font-family: 'Source Code Pro';
+}
+
+hr {
+    border: 1px solid #bbb;
+    height: 0px;
+    /* Set the hr color */
+    color: #bbb; //old IE
+    background-color: #bbb;
+}
+
+.Monospaced {
+    font-family: 'Source Code Pro';
+}
+
+.NoWrap {
+    white-space: nowrap;
+}
+
+.RightAligned{
+    text-align:right;
+}
+
+.FloatRight{
+    float:right;
+}
+
+.LeftAligned{
+    float:left;
+}
+
+.Hidden {
+    display : none;
+}
+
+.Invisible {
+    visibility : hidden;
+}
+
+.DivTable {
+    display: table;
+}
+
+.DivCol {
+    display: table-column;
+}
+
+.DivRow {
+    display : table-row;
+}
+
+.DivCell {
+    display : table-cell;
+    vertical-align: top;
+}
+
+.Expand {
+    width: 100%;
+    overflow:hidden;
+}

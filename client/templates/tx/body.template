@@ -1,0 +1,25 @@
+<div class="navbar">
+    <div class="navbar_back"> back </div>
+    <div class="navbar_title">
+        {{PAGE_TITLE}}
+        <span class="navbar_title_txlabel" id="navbar_tx">{{TXID}}</span>
+    </div>
+</div>
+<div class="content" id="content">
+    From <span>{{senderRS}}</span><br/>
+    To <span>{{recipientRS}}</span><br/>
+    <br/>
+    Amount <span>{{amountNQT}}</span><br/>
+    Fee <span>{{feeNQT}}</span><br/>
+    <br/>
+    Transaction ID <span>{{transaction}}</span><br/>
+    Transaction Time <span>{{timestamp}}</span><br/>
+    Transaction Deadline <span>{{deadline}}</span><br/>
+    Transaction Type <span>{{type}}</span><br/>
+    Transaction SubType <span>{{subtype}}</span><br/>
+    <br/>
+    Block# <span>{{height}}</span><br/>
+    Block <span>{{block}}</span><br/>
+    Block Time <span>{{blockTimestamp}}</span><br/>
+    Confirmation <span>{{confirmations}}</span><br/>
+</div>

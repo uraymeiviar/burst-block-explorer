@@ -1,0 +1,16 @@
+{
+  "name": "burst-block-explorer",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/burst-explorer.js"
+  },
+  "dependencies": {
+    "express": "~4.x",
+    "morgan": "*",
+    "cookie-parser": "*",
+    "debug" : "*",
+    "request" : "*",
+    "prettyjson" : "*"
+  }
+}
