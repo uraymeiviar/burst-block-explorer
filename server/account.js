@@ -18,7 +18,7 @@ router.get('/:accid', function(clientReq, clientRes) {
             };
             if (!error && res.statusCode == 200) {
                 respond.message = JSON.parse(body);
-                respond.message.genesisTimestamp = BurstConfig.walletConstant;
+                respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
             }
             else {
                 respond.status  = false;

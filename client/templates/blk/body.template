@@ -1,33 +1,49 @@
-<div class="navbar">
-    <div class="navbar_back"> back </div>
-    <div class="navbar_title">
-        {{PAGE_TITLE}}
-        <span class="navbar_title_txlabel" id="navbar_tx">{{BLKID}}</span>
+<div class="BlockContent" id="Block-{{BLKID}}">
+    <div class="divtable">
+        <div class="BlockPrevNext DivCell">
+            <div class="DivRow PrevNextBtn"><a class="NextBlockBtn" id="NextBlockBtn-{{BLKID}}" href="/blk/{{nextBlock}}">&nbsp;&#708;&nbsp;</a></div>
+            <div class="DivRow PrevNextBtn"><a class="PrevBlockBtn" id="PrevBlockBtn-{{BLKID}}" href="/blk/{{previousBlock}}">&nbsp;&#709;&nbsp;</a></div>
+        </div>
+        <div class="BlockHeader DivCell">
+            <div class="BlockNumber" title="Block Height">{{height}}</div>
+            <div class="BlockSmallLabel">TX Amount <span class="Monospaced">{{totalAmountNQTStr}}</span></div>
+            <div class="BlockSmallLabel" title="Generated Time : {{timeString}}">{{timeStringDelta}}</div>
+        </div>
+        <div class="BlockTxCount DivCell">
+            <div class="BlockNumber DivCell" title="Transaction Count">{{numberOfTransactions}}<span class="tinyLabel">TX</span></div>
+            <div class="BlockSmallLabel">Fee <span class="Monospaced">{{totalFeeNQT}}</span></div>
+            <div class="BlockSmallLabel">Reward <span class="Monospaced">{{blockReward}}</span></div>
+        </div>
+        <div class="BlockTxCount DivCell">
+            <div class="BlockNumber DivCell" title="Base Target">{{baseTargetStr}}<span class="tinyLabel">{{baseTargetUnit}}</span></div>
+            <div class="BlockSmallLabel">Round Time <span class="Monospaced" id="RoundTimeValue-{{BLKID}}">{{roundTime}}</span></div>
+            <div class="BlockSmallLabel">Diff+ <span class="Monospaced"  id="DiffIncValue-{{BLKID}}">{{diffIncrease}}</span></div>
+        </div>
     </div>
-</div>
-<div class="content" id="content">
-    Prev Block <span>{{previousBlock}}</span><br/>
-    Next Block <span>{{nextBlock}}</span><br/>
-    Block Height <span>{{height}}</span><br/>
-    Block Timestamp <span>{{timestamp}}</span><br/>
-    <br/>
-    Amount TX<span>{{totalAmountNQT}}</span><br/>
-    Number of TX <span>{{numberOfTransactions}}</span><br/>
-    Amount Fee<span>{{totalFeeNQT}}</span><br/>
-    Payload Length <span>{{payloadLength}}</span><br/>
-    <br/>
-    Generator <span>{{generatorRS}}</span><br/>
-    Reward <span>{{blockReward}}</span><br/>
-    Scoop # <span>{{scoopNum}}</span><br/>
-    Base Target <span>{{baseTarget}}</span><br/>
-    Nonce <span>{{nonce}}</span><br/>
-    <br/>
-    Gen Sig <span>{{generationSignature}}</span><br/>
-    Payload Hash <span>{{payloadHash}}</span><br/>
-    Version <span>{{version}}</span><br/>
-    <br/>
-    Transactions :
-    <div id="txList">
+    <div class="BlockDetail" id="BlockDetailInfo-{{BLKID}}">
+        <div class="Field medLabel"><div class="FieldLabel">Block ID</div> <div class="FieldValue Monospaced">{{BLKID}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Prev Block</div><a href="/blk/{{previousBlock}}"><div class="FieldValue BlockIDLink Monospaced" id="PrevBlockOf-{{BLKID}}">{{previousBlock}}</div></a></div>
+        <div class="Field medLabel"><div class="FieldLabel">Next Block</div><a href="/blk/{{nextBlock}}"><div class="FieldValue BlockIDLink Monospaced" id="NextBlockOf-{{BLKID}}">{{nextBlock}}</div></a></div>
+        <div class="Field medLabel"><div class="FieldLabel">Blocktime</div> <div class="FieldValue Monospaced">{{timestamp}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Version</div> <div class="FieldValue Monospaced">{{version}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Block Sig</div> <div class="FieldValue Monospaced">{{blockSignature}}</div></div>
 
+        <div class="Field medLabel"><div class="FieldLabel">Gensig</div> <div class="FieldValue Monospaced">{{generationSignature}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Scoop</div> <div class="FieldValue Monospaced">{{scoopNum}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Base Target</div> <div class="FieldValue Monospaced">{{baseTarget}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Nonce</div> <div class="FieldValue Monospaced">{{nonce}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Generator</div><a href="/acc/{{generatorRS}}"><div class="FieldValue Monospaced BlockGenerator">{{generatorRS}}</div></a></div>
+
+        <div class="Field medLabel"><div class="FieldLabel">Payload Len</div> <div class="FieldValue Monospaced">{{payloadLength}}</div></div>
+        <div class="Field medLabel"><div class="FieldLabel">Payload Hash</div> <div class="FieldValue Monospaced">{{payloadHash}}</div></div>
+    </div>
+    <div class="BlockDetail" id="BlockDetailTx-{{BLKID}}">
+        <div class="Field medLabel"><div class="FieldLabel">Transactions</div>
+            <div class="FieldValue Monospaced BlockTxList" id="txList-{{BLKID}}">
+                {{#transactions}}
+                <a href="/tx/{{.}}"><span>{{.}}</span></a><br/>
+                {{/transactions}}
+            </div>
+        </div>
     </div>
 </div>

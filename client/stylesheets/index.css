@@ -1,13 +1,19 @@
 html,body
 {
     font-family: 'Abel';
-    font-size:14px;
+    font-size:16px;
     margin:0;
     padding:0;
+    background-color: #14151b;
 }
 
 a {
     text-decoration: none;
+    color: inherit;
+}
+
+a:hover{
+    color: #80a2c5;
 }
 
 pre {
@@ -64,10 +70,276 @@ hr {
 
 .DivCell {
     display : table-cell;
-    vertical-align: top;
 }
 
 .Expand {
     width: 100%;
     overflow:hidden;
+}
+
+.medLabel {
+    font-size: 1.0em;
+    color: #50617a;
+}
+
+.BlockSmallLabel {
+    font-size: 0.8em;
+    color: #50617a;
+}
+.AccountSmallLabel {
+    font-size: 0.8em;
+    color: #488168;
+}
+
+.AccountRS {
+    font-family: 'Source Code Pro';
+    background-color: #243D37;
+    font-size: 1.0em;
+    padding:0.5em;
+    padding-bottom: 0;
+}
+
+.AccountNum {
+    font-family: 'Source Code Pro';
+    background-color: #243D37;
+    color: #488168;
+    font-size: 0.75em;
+    padding:0.5em;
+    padding-top: 0;
+}
+
+.AccountDetail {
+    padding:0.5em;
+}
+
+.AccountPublicKey{
+    font-family: 'Source Code Pro';
+    color: #488168;
+    font-size: 0.75em;
+    padding:0.5em;
+    max-width:24em;
+    word-wrap:break-word;
+}
+
+.AccountQR{
+    width:5em;
+    height:5em;
+    display:inline-block;
+    padding:0.2em;
+}
+
+.tinyLabel {
+    font-size: 0.6em;
+    color: #50617a;
+    line-height: 0.85em;
+}
+
+.Field {
+    display:table-row;
+}
+
+.FieldLabel {
+    min-width: 8em;
+    float:left;
+    text-align: right;
+    padding:0.1em;
+    padding-right: 0.2em;
+    vertical-align: top;
+}
+
+.FieldValue {
+    max-width:24em;
+    word-wrap:break-word;
+    float:left;
+    padding:0.1em;
+    padding-left: 0.1em;
+    color: #5d718e;
+    vertical-align: middle;
+}
+
+.FieldValue:hover{
+    background-color: #2c3644;
+}
+
+.hugeLabel {
+    font-size:4.0em;
+}
+
+.content {
+    margin:1.0em;
+}
+
+.BlockNumber {
+    line-height: 0.85em;
+    font-size:3.0em;
+}
+
+.AccountBalance {
+    line-height: 0.85em;
+    font-size:3.0em;
+}
+
+.BlockContent {
+    background-color: #262f3b;
+    margin:1.0em;
+    color: #80a2c5;
+    padding:0;
+    display:inline-block;
+}
+
+.AccountContent {
+    background-color: #1A2522;
+    margin:1.0em;
+    color: #30DA7B;
+    padding:0;
+    display:inline-block;
+}
+
+.PrevNextBtn{
+    vertical-align: middle;
+    font-size: 2.0em;
+    padding-left: 1em;
+    padding-right: 1em;
+    cursor: pointer;
+}
+.PrevNextBtn:hover {
+    background-color: #384456;
+    color: #647998;
+}
+
+.BlockPrevNext{
+    color:#1f2630;
+    padding:0.5em;
+    vertical-align: middle;
+    float:right;
+}
+
+.BlockHeader{
+    padding:0.5em;
+}
+
+.AccountHeader{
+    display:inline-block;
+}
+
+.BlockTxCount{
+    padding:0.5em;
+
+}
+
+.BlockDetail{
+    background-color: #1a2029;
+    padding:0.5em;
+    font-size:0.75em;
+}
+
+.BlockInfoBtn{
+    padding:0.5em;
+    font-size:0.8em;
+    cursor:pointer;
+}
+.BlockInfoBtnActive {
+    background-color: #1a2029;
+}
+
+.BlockInfoBtn:hover{
+    background-color: #2c3644;
+}
+
+.BlockGenerator {
+    color: #52b173;
+}
+
+.BlockIDLink {
+    color: #80a2c5;
+}
+
+.BlockTxList{
+    color: #dd6d31;
+}
+
+.ToggleBtnBlockDetailInfo{}
+.ToggleBtnBlockDetailTx{}
+
+.TransactionContent {
+    background-color: #291B1B;
+    margin:1.0em;
+    color: #F59B9B;
+    display:inline-block;
+}
+
+.TransactionHeader{
+    background-color: #472929;
+    padding:0.5em;
+}
+
+.TransactionDetail{
+    padding:0.5em;
+}
+
+.TransactionDetailInfo{
+    display:inline-block;
+}
+
+.TransactionDetailNum{
+    display: inline-block;
+    float:right;
+    text-align: right;
+}
+
+.TransactionID {
+    font-family: 'Source Code Pro';
+    font-size: 1em;
+
+}
+
+.TransactionTime {
+    font-size: 0.8em;
+    padding:0.5em;
+    padding-top: 0;
+    color:#8D5A5A;
+}
+
+.TransactionField{
+    display: table-row;
+    font-size: 0.8em;
+}
+
+.TranactionAccLabel{
+    vertical-align: middle;
+    font-size:0.8em;
+    color:#8D5A5A;
+}
+
+.TransactionAmount{
+    line-height: 0.85em;
+    font-size:3.0em;
+}
+
+.TransactionFee{
+    font-size: 0.75em;
+    color:#8D5A5A;
+}
+
+.TransactionFieldLabel {
+    min-width: 8em;
+    float:left;
+    text-align: right;
+    padding:0.1em;
+    padding-right: 0.2em;
+    vertical-align: top;
+    color: #8D5A5A;
+}
+
+.TransactionFieldValue {
+    max-width:24em;
+    word-wrap:break-word;
+    float:left;
+    padding:0.1em;
+    padding-left: 0.1em;
+    vertical-align: middle;
+}
+
+.TransactionFieldValue:hover{
+    background-color: #2c3644;
 }

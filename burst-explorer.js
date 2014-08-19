@@ -52,7 +52,7 @@ request.post( {
                 function(error2, res2, body2){
                     var currentTime = new Date().getTime();
                     var blockTimestamp = JSON.parse(body2);
-                    BurstConfig.genesisBlockTimestamp = currentTime - parseInt(blockTimestamp.time);
+                    BurstConfig.genesisBlockTimestamp = currentTime - parseInt(blockTimestamp.time)*1000;
                     console.log("genesis-block blocktime "+blockTimestamp.time);
 
                     app.listen(app.get('port'), function() {

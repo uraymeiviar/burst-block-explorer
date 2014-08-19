@@ -1,25 +1,27 @@
-<div class="navbar">
-    <div class="navbar_back"> back </div>
-    <div class="navbar_title">
-        {{PAGE_TITLE}}
-        <span class="navbar_title_txlabel" id="navbar_tx">{{TXID}}</span>
+<div class="TransactionContent" id="Transaction-{{TXID}}">
+    <div class="TransactionHeader">
+        <div class="TransactionDetailInfo">
+            <div class="TransactionID">TX {{transaction}}</div>
+            <div class="TranactionAccLabel"><span class="Monospaced">{{senderRS}}&nbsp;&#9654;&nbsp;</span></div>
+            <div class="TranactionAccLabel"><span class="Monospaced">{{recipientRS}}&nbsp;&#9664;&nbsp;</span></div>
+        </div>
+        <div class="TransactionDetailNum">
+            <div class="TransactionAmount" title="Amount">{{amountNQTStrUnit}}</div>
+            <div class="TransactionTime">{{timeStringDelta}}</div>
+        </div>
     </div>
-</div>
-<div class="content" id="content">
-    From <span>{{senderRS}}</span><br/>
-    To <span>{{recipientRS}}</span><br/>
-    <br/>
-    Amount <span>{{amountNQT}}</span><br/>
-    Fee <span>{{feeNQT}}</span><br/>
-    <br/>
-    Transaction ID <span>{{transaction}}</span><br/>
-    Transaction Time <span>{{timestamp}}</span><br/>
-    Transaction Deadline <span>{{deadline}}</span><br/>
-    Transaction Type <span>{{type}}</span><br/>
-    Transaction SubType <span>{{subtype}}</span><br/>
-    <br/>
-    Block# <span>{{height}}</span><br/>
-    Block <span>{{block}}</span><br/>
-    Block Time <span>{{blockTimestamp}}</span><br/>
-    Confirmation <span>{{confirmations}}</span><br/>
+    <div class="TransactionDetail">
+    <div class="TransactionField"><span class="TransactionFieldLabel">Block #</span> <span class="TransactionFieldValue Monospaced">{{height}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Block</span> <span class="TransactionFieldValue Monospaced">{{block}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Blocktime</span> <span class="TransactionFieldValue Monospaced">{{blockTimestamp}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Confirmation</span> <span class="TransactionFieldValue Monospaced">{{confirmations}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Deadline</span> <span class="TransactionFieldValue Monospaced">{{deadline}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Type</span> <span class="TransactionFieldValue Monospaced">{{type}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">SubType</span> <span class="TransactionFieldValue Monospaced">{{subtype}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Amount</span> <span class="TransactionFieldValue Monospaced">{{amountNQTStr}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Fee</span> <span class="TransactionFieldValue Monospaced">{{feeNQTStr}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">Signature</span> <span class="TransactionFieldValue Monospaced">{{signature}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">SigHash</span> <span class="TransactionFieldValue Monospaced">{{signatureHash}}</span></div>
+    <div class="TransactionField"><span class="TransactionFieldLabel">FullHash</span> <span class="TransactionFieldValue Monospaced">{{fullHash}}</span></div>
+    </div>
 </div>

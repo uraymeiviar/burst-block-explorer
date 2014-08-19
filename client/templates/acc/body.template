@@ -1,17 +1,14 @@
-<div class="navbar">
-    <div class="navbar_back"> back </div>
-    <div class="navbar_title">
-        {{PAGE_TITLE}}
-        <span class="navbar_title_txlabel" id="navbar_tx">{{TXID}}</span>
+<div class="AccountContent" id="Account-{{ACCID}}">
+    <div class="AccountRS">{{accountRS}}</div>
+    <div class="AccountNum">{{account}}</div>
+    <div class="AccountDetail">
+        <div class="AccountHeader">
+            <div class="AccountBalance" title="Account Balance">{{balanceNQTStr}}</div>
+            <div class="AccountSmallLabel">Unconfirmed <span class="Monospaced">{{unconfirmedBalanceNQTStr}}</span></div>
+            <div class="AccountSmallLabel">Mined Balance <span class="Monospaced">{{forgedBalanceNQTStr}}</span></div>
+        </div>
+        <div class="AccountQR" id="AccountQR-{{ACCID}}">
+        </div>
     </div>
-</div>
-<div class="content" id="content">
-    Account RS <span>{{accountRS}}</span><br/>
-    Account Num <span>{{account}}</span><br/>
-    <br/>
-    Balance <span>{{balanceNQT}}</span><br/>
-    Unconfirmed Balance <span>{{unconfirmedBalanceNQT}}</span><br/>
-    Mined Balance <span>{{forgedBalanceNQT}}</span><br/>
-    <br/>
-    Public Key <span>{{publicKey}}</span>
+    <div class="AccountPublicKey">{{publicKey}}</div>
 </div>
