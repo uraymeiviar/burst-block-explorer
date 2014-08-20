@@ -19,7 +19,7 @@ function preprocessTxData(data){
 }
 
 function renderTransactionHtml(txid,data, done) {
-    getTemplate('/templates/tx/body.template', function(template) {
+    getTemplate('/templates/transaction.template', function(template) {
         preprocessTxData(data);
         done(Mustache.render(template, data));
     });

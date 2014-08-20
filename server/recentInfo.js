@@ -33,6 +33,7 @@ function getRecentInfo(done){
                 for(var i=0; i<respond.message.blocks.length ; i++){
                     if(accountList.indexOf(respond.message.blocks[i].generator) == -1){
                         accountList.push(respond.message.blocks[i].generator);
+                        console.log('acc '+respond.message.blocks[i].generator+' gen blk'+respond.message.blocks[i].height);
                     }
                     for(var t=0 ; t<respond.message.blocks[i].transactions.length ; t++){
                         if(txList.indexOf(respond.message.blocks[i].transactions[t]) == -1){
@@ -43,16 +44,17 @@ function getRecentInfo(done){
 
                 burst.getTransactionList(txList, 0, respond.message.transactions, function(){
                    for(var n=0 ; n<respond.message.transactions.length ; n++){
-                       if(accountList.indexOf(respond.message.transactions.sender) == -1){
+                       if(accountList.indexOf(respond.message.transactions[n].sender) == -1){
                            accountList.push(respond.message.transactions[n].sender);
+                           console.log('acc '+respond.message.transactions[n].sender+' sender tx '+respond.message.transactions[n].transaction);
                        }
-                       if(accountList.indexOf(respond.message.transactions.recipient) == -1){
+                       if(accountList.indexOf(respond.message.transactions[n].recipient) == -1){
                            accountList.push(respond.message.transactions[n].recipient);
+                           console.log('acc '+respond.message.transactions[n].recipient+' recipient tx '+respond.message.transactions[n].transaction);
                        }
                    }
 
                     burst.getAccountList(accountList, 0, respond.message.accounts, function(){
-                       console.log(jsonFormat.render(accountList));
                        done(respond);
                    });
                 });

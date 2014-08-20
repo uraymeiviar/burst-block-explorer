@@ -42,7 +42,7 @@ function preprocessBlkData(data){
 }
 
 function renderBlockHtml(blkid,data,done) {
-    getTemplate('/templates/blk/body.template', function(template) {
+    getTemplate('/templates/transaction.template', function(template) {
         preprocessBlkData(data);
         done(Mustache.render(template, data));
     });

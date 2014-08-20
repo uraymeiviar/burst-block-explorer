@@ -17,7 +17,7 @@ function preprocessAccData(data){
 }
 
 function renderAccountHtml(accid,data, done) {
-    getTemplate('/templates/acc/body.template', function(template) {
+    getTemplate('/templates/transaction.template', function(template) {
         preprocessAccData(data);
         done(Mustache.render(template, data));
         var qrArea = $('#AccountQR-'+accid);
