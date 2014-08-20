@@ -7,15 +7,19 @@ function loadAccount(accid, done ){
     });
 }
 
+function preprocessAccData(data){
+    data.ACCID = data.account;
+    data.PAGE_TITLE = 'Account';
+    data.balanceNQTStr = satoshiToFloat(data.balanceNQT);
+    data.balanceNQTStrUnit = floatToUnitStr(parseFloat(data.balanceNQTStr));
+    data.unconfirmedBalanceNQTStr = satoshiToFloat(data.unconfirmedBalanceNQT);
+    data.forgedBalanceNQTStr = satoshiToFloat(data.forgedBalanceNQT);
+}
+
 function renderAccountHtml(accid,data, done) {
     getTemplate('/templates/acc/body.template', function(template) {
-        data.ACCID = accid;
-        data.PAGE_TITLE = 'Account';
-        data.balanceNQTStr = satoshiToFloat(data.balanceNQT);
-        data.unconfirmedBalanceNQTStr = satoshiToFloat(data.unconfirmedBalanceNQT);
-        data.forgedBalanceNQTStr = satoshiToFloat(data.forgedBalanceNQT);
+        preprocessAccData(data);
         done(Mustache.render(template, data));
-        console.log(data);
         var qrArea = $('#AccountQR-'+accid);
         qrArea.qrcode({
             "size": parseInt(qrArea.innerHeight()),

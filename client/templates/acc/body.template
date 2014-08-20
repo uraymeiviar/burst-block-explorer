@@ -1,13 +1,13 @@
 <div class="AccountContent" id="Account-{{ACCID}}">
-    <div class="AccountRS">{{accountRS}}</div>
+    <div class="AccountRS"><a href="/acc/{{accountRS}}">{{accountRS}}</a></div>
     <div class="AccountNum">{{account}}</div>
     <div class="AccountDetail">
+        <div class="AccountQR" id="AccountQR-{{ACCID}}">
+        </div>
         <div class="AccountHeader">
-            <div class="AccountBalance" title="Account Balance">{{balanceNQTStr}}</div>
+            <div class="AccountBalance" title="Account Balance">{{balanceNQTStrUnit}}</div>
             <div class="AccountSmallLabel">Unconfirmed <span class="Monospaced">{{unconfirmedBalanceNQTStr}}</span></div>
             <div class="AccountSmallLabel">Mined Balance <span class="Monospaced">{{forgedBalanceNQTStr}}</span></div>
-        </div>
-        <div class="AccountQR" id="AccountQR-{{ACCID}}">
         </div>
     </div>
     <div class="AccountPublicKey">{{publicKey}}</div>

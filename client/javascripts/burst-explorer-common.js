@@ -17,7 +17,7 @@ function getTemplate(path, callback){
 
 function pageLoadBlock(blkid) {
     loadBlock(blkid,function(html){
-        $('body').append(html);
+        $('#content').append(html);
     });
 }
 
@@ -30,13 +30,49 @@ function pageLoadAccount(accId) {
         }
     }
     loadAccount(accStr,function(html){
-        $('body').append(html);
+        $('#content').append(html);
     });
 }
 
 function pageLoadTransaction(txId) {
     loadTransaction(txId,function(html){
-        $('body').append(html);
+        $('#content').append(html);
+    });
+}
+
+function renderIndexHtml(data, done){
+    getTemplate('/templates/index.template', function(template) {
+        done(Mustache.render(template, data));
+    });
+}
+
+function pageLoadIndex(){
+    $.get('/api/recent', function(res) {
+        var respond = JSON.parse(res);
+        if(respond.status === true){
+            for(var i=0; i<respond.message.blocks.length ; i++){
+                preprocessBlkData(respond.message.blocks[i]);
+            }
+            for(var i=0 ; i<respond.message.transactions.length ; i++){
+                preprocessTxData(respond.message.transactions[i]);
+            }
+            for(var i=0 ; i<respond.message.accounts.length ; i++){
+                preprocessAccData(respond.message.accounts[i]);
+            }
+            renderIndexHtml(respond.message,function(html){
+                $('#content').append(html);
+
+                for(var i=0 ; i<respond.message.accounts.length ; i++){
+                    var qrArea = $('#AccountQR-'+respond.message.accounts[i].account);
+                    qrArea.qrcode({
+                        "size": parseInt(qrArea.innerHeight()),
+                        "fill": "#30DA7B",
+                        "render": "div",
+                        "text": respond.message.accounts[i].accountRS
+                    });
+                }
+            });
+        }
     });
 }
 
@@ -55,6 +91,9 @@ $(document).ready(function(){
     else if(paths[1].toLowerCase() == 'tx') {
         pageLoadTransaction(paths[2]);
     }
+    else {
+        pageLoadIndex();
+    }
 });
 
 function satoshiToFloat(satoshi){
@@ -62,16 +101,27 @@ function satoshiToFloat(satoshi){
 }
 
 function floatToUnitStr(num){
-    if(num >= 1000000000){
-        return (num/1000000000).toFixed(2)+'G';
+    if( (typeof num) == 'undefined'){
+        return '--';
     }
-    else if( num >= 1000000){
-        return (num/1000000).toFixed(2)+'M';
+    if( isNaN(num)){
+        return '--';
     }
-    else if( num >= 1000){
-        return (num/1000).toFixed(2)+'K';
+    try{
+        if(num >= 1000000000){
+            return (num/1000000000).toFixed(2)+'G';
+        }
+        else if( num >= 1000000){
+            return (num/1000000).toFixed(2)+'M';
+        }
+        else if( num >= 1000){
+            return (num/1000).toFixed(2)+'K';
+        }
+        else{
+            return num.toFixed(2);
+        }
     }
-    else{
-        return num.toFixed(2);
+    catch(e){
+        return '--';
     }
 }

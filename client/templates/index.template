@@ -1,0 +1,107 @@
+<div class="divTable">
+    <div class="RecentList" id="IndexBlockList">
+        <div class="RecentListTitle">Recent 10 Blocks</div>
+        {{#blocks}}
+            <div class="BlockContent" id="Block-{{BLKID}}">
+                <div class="BlockContentHeader">
+                    <div class="BlockContentBtn" id="BlockContentBtn-{{BLKID}}">+</div>
+                    <div class="BlockHeader DivCell">
+                        <div class="BlockNumber" title="Block Height"><a href="/blk/{{BLKID}}">{{height}}</a></div>
+                        <div class="BlockSmallLabel">TX Amount <span class="Monospaced">{{totalAmountNQTStrUnit}}</span></div>
+                        <div class="BlockSmallLabel" title="Generated Time : {{timeString}}">{{timeStringDelta}}</div>
+                    </div>
+                    <div class="BlockTxCount DivCell">
+                        <div class="BlockNumber DivCell" title="Transaction Count">{{numberOfTransactions}}<span class="tinyLabel">TX</span></div>
+                        <div class="BlockSmallLabel">Fee <span class="Monospaced">{{totalFeeNQT}}</span></div>
+                        <div class="BlockSmallLabel">Reward <span class="Monospaced">{{blockRewardStrUnit}}</span></div>
+                    </div>
+                    <div class="BlockTxCount DivCell">
+                        <div class="BlockNumber DivCell" title="Base Target">{{baseTargetStr}}<span class="tinyLabel">{{baseTargetUnit}}</span></div>
+                        <div class="BlockSmallLabel">Round Time <span class="Monospaced" id="RoundTimeValue-{{BLKID}}">{{roundTime}}</span></div>
+                        <div class="BlockSmallLabel">Diff+ <span class="Monospaced"  id="DiffIncValue-{{BLKID}}">{{diffIncrease}}</span></div>
+                    </div>
+                </div>
+                <div class="BlockDetail Hidden" id="BlockDetailInfo-{{BLKID}}">
+                    <div class="Field medLabel"><div class="FieldLabel">Block ID</div> <div class="FieldValue Monospaced">{{BLKID}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Prev Block</div><a href="/blk/{{previousBlock}}"><div class="FieldValue BlockIDLink Monospaced" id="PrevBlockOf-{{BLKID}}">{{previousBlock}}</div></a></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Next Block</div><a href="/blk/{{nextBlock}}"><div class="FieldValue BlockIDLink Monospaced" id="NextBlockOf-{{BLKID}}">{{nextBlock}}</div></a></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Blocktime</div> <div class="FieldValue Monospaced">{{timestamp}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Version</div> <div class="FieldValue Monospaced">{{version}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Block Sig</div> <div class="FieldValue Monospaced">{{blockSignature}}</div></div>
+
+                    <div class="Field medLabel"><div class="FieldLabel">Gensig</div> <div class="FieldValue Monospaced">{{generationSignature}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Scoop</div> <div class="FieldValue Monospaced">{{scoopNum}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Base Target</div> <div class="FieldValue Monospaced">{{baseTarget}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Nonce</div> <div class="FieldValue Monospaced">{{nonce}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Generator</div><a href="/acc/{{generatorRS}}"><div class="FieldValue Monospaced BlockGenerator">{{generatorRS}}</div></a></div>
+
+                    <div class="Field medLabel"><div class="FieldLabel">Payload Len</div> <div class="FieldValue Monospaced">{{payloadLength}}</div></div>
+                    <div class="Field medLabel"><div class="FieldLabel">Payload Hash</div> <div class="FieldValue Monospaced">{{payloadHash}}</div></div>
+                </div>
+                <div class="BlockDetail Hidden" id="BlockDetailTx-{{BLKID}}">
+                    <div class="Field medLabel"><div class="FieldLabel">Transactions</div>
+                        <div class="FieldValue Monospaced BlockTxList" id="txList-{{BLKID}}">
+                            {{#transactions}}
+                                <a href="/tx/{{.}}"><span>{{.}}</span></a><br/>
+                            {{/transactions}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/blocks}}
+    </div>
+    <div class="RecentList" id="IndexTransactionList">
+        <div class="RecentListTitle">Transactions in recent Blocks</div>
+        {{#transactions}}
+            <div class="TransactionContent" id="Transaction-{{TXID}}">
+                <div class="TransactionHeader">
+                    <div class="TxContentBtn" id="TxContentBtn-{{TXID}}">+</div>
+                    <div class="TransactionDetailInfo">
+                        <div class="TransactionID">TX <a href="/tx/{{transaction}}">{{transaction}}</a></div>
+                        <div class="TranactionAccLabel"><span class="Monospaced"><a href="/acc/{{senderRS}}">{{senderRS}}</a>&nbsp;&#9654;&nbsp;</span></div>
+                        <div class="TranactionAccLabel"><span class="Monospaced"><a href="/acc/{{recipientRS}}">{{recipientRS}}</a>&nbsp;&#9664;&nbsp;</span></div>
+                    </div>
+                    <div class="TransactionDetailNum">
+                        <div class="TransactionAmount" title="Amount">{{amountNQTStrUnit}}</div>
+                        <div class="TransactionTime">{{timeStringDelta}}</div>
+                    </div>
+                </div>
+                <div class="TransactionDetail Hidden" id="TransactionDetail-{{TXID}}">
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Block #</span> <span class="TransactionFieldValue Monospaced"><a href="/blk/{{block}}">{{height}}</a></span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Block</span> <span class="TransactionFieldValue Monospaced"><a href="/blk/{{block}}">{{block}}</a></span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Blocktime</span> <span class="TransactionFieldValue Monospaced">{{blockTimestamp}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Confirmation</span> <span class="TransactionFieldValue Monospaced">{{confirmations}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Deadline</span> <span class="TransactionFieldValue Monospaced">{{deadline}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Type</span> <span class="TransactionFieldValue Monospaced">{{type}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">SubType</span> <span class="TransactionFieldValue Monospaced">{{subtype}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Amount</span> <span class="TransactionFieldValue Monospaced">{{amountNQTStr}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Fee</span> <span class="TransactionFieldValue Monospaced">{{feeNQTStr}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">Signature</span> <span class="TransactionFieldValue Monospaced">{{signature}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">SigHash</span> <span class="TransactionFieldValue Monospaced">{{signatureHash}}</span></div>
+                    <div class="TransactionField"><span class="TransactionFieldLabel">FullHash</span> <span class="TransactionFieldValue Monospaced">{{fullHash}}</span></div>
+                </div>
+            </div>
+        {{/transactions}}
+    </div>
+    <div class="RecentList" id="IndexAccountList">
+        <div class="RecentListTitle">Accounts involved in recent Blocks</div>
+        {{#accounts}}
+            <div class="AccountContent" id="Account-{{ACCID}}">
+                <div class="AccountRS"><a href="/acc/{{accountRS}}">{{accountRS}}</a></div>
+                <div class="AccountNum">{{account}}</div>
+                <div class="AccountDetail">
+                    <div class="AccountQR" id="AccountQR-{{ACCID}}">
+                    </div>
+                    <div class="AccountHeader">
+                        <div class="AccountBalance" title="Account Balance">{{balanceNQTStrUnit}}</div>
+                        <div class="AccountSmallLabel">Unconfirmed <span class="Monospaced">{{unconfirmedBalanceNQTStr}}</span></div>
+                        <div class="AccountSmallLabel">Mined Balance <span class="Monospaced">{{forgedBalanceNQTStr}}</span></div>
+                    </div>
+                </div>
+                <div class="AccountPublicKey Hidden">{{publicKey}}</div>
+            </div>
+        {{/accounts}}
+    </div>
+</div>
+
+

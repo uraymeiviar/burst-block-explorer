@@ -18,6 +18,7 @@ router.get('/:blkid', function(clientReq, clientRes) {
             };
             if (!error && res.statusCode == 200) {
                 respond.message = JSON.parse(body);
+                respond.message.blockId = clientReq.params['blkid'];
                 respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
             }
             else {

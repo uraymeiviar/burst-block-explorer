@@ -10,6 +10,7 @@ var account         = require('./server/account');
 var transaction     = require('./server/transaction');
 var block           = require('./server/block');
 var index           = require('./server/index');
+var recentInfo      = require('./server/recentInfo');
 BurstConfig         = require('./burst-config');
 
 var app = express();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use('/api/acc', account);
 app.use('/api/tx', transaction);
 app.use('/api/blk', block);
+app.use('/api/recent',recentInfo);
 app.use(express.static(path.join(__dirname, 'client')));
 app.use('/',index);
 app.use('/acc/*',index);
