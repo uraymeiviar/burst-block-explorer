@@ -19,7 +19,23 @@
 <body>
 <div id="nav">
     <div id="pagetitle"><span class="burstLogo">Burst</span> Block Explorer</div>
-    <div id="searchbox">search <input id="searchinput" type="text" maxlength="64"/></div>
+    <div class="SearchArea">
+        <div class="divCell searchbox searchboxBlock">
+            search block
+            <input class="searchinput searchinputBlock" type="text" maxlength="32"/>
+            <input type="button" class="searchinputBtn searchinputBtnBlock" value="&#9701;">
+        </div>
+        <div class="divCell searchbox searchboxTx">
+            search transaction
+            <input class="searchinput searchinputTx" type="text" maxlength="32"/>
+            <input type="button" class="searchinputBtn searchinputBtnTx" value="&#9701;">
+        </div>
+        <div class="divCell searchbox searchboxAccount">
+            search account
+            <input class="searchinput searchinputAccount" type="text" maxlength="32"/>
+            <input type="button" class="searchinputBtn searchinputBtnAccount" value="&#9701;">
+        </div>
+    </div>
 </div>
 <div id="content">
 

@@ -1,33 +1,12 @@
 var express = require('express');
 var request = require('request');
+var burst = require('./burstapi');
 var router = express.Router();
 
 router.get('/:blkid', function(clientReq, clientRes) {
-    request.post(
-        {
-            url:BurstConfig.walletUrl,
-            form: {
-                requestType:'getBlock',
-                block:clientReq.params['blkid']
-            }
-        },
-        function(error, res, body){
-            var respond = {
-                status : true,
-                message : null
-            };
-            if (!error && res.statusCode == 200) {
-                respond.message = JSON.parse(body);
-                respond.message.blockId = clientReq.params['blkid'];
-                respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
-            }
-            else {
-                respond.status  = false;
-                respond.message = 'wallet error, '+res.statusCode;
-            }
-            clientRes.send(JSON.stringify(respond));
-        }
-    );
+    burst.getBlock(clientReq.params['blkid'], function(response){
+        clientRes.send(JSON.stringify(response));
+    });
 });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 <div class="divTable">
     <div class="RecentList" id="IndexBlockList">
-        <div class="RecentListTitle">Recent 10 Blocks</div>
+        <div class="RecentListTitle RecentListTitleBlock">Recent 10 Blocks</div>
         {{#blocks}}
             <div class="BlockContent" id="Block-{{BLKID}}">
                 <div class="BlockContentHeader">
@@ -50,7 +50,7 @@
             </div>
         {{/blocks}}
     </div>
-    <div class="RecentList" id="IndexTransactionList">
+    <div class="RecentList RecentListTitleTx" id="IndexTransactionList">
         <div class="RecentListTitle">Transactions in recent Blocks</div>
         {{#transactions}}
             <div class="TransactionContent" id="Transaction-{{TXID}}">
@@ -84,7 +84,7 @@
         {{/transactions}}
     </div>
     <div class="RecentList" id="IndexAccountList">
-        <div class="RecentListTitle">Accounts involved in recent Blocks</div>
+        <div class="RecentListTitle RecentListTitleAccount">Accounts involved in recent Blocks</div>
         {{#accounts}}
             <div class="AccountContent" id="Account-{{ACCID}}">
                 <div class="AccountRS"><a href="/acc/{{accountRS}}">{{accountRS}}</a></div>
