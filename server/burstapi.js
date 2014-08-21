@@ -1,4 +1,5 @@
 var request = require('request');
+var async   = require('async');
 
 function getBlockChainStatus(done){
     request.post({
@@ -147,6 +148,20 @@ function getTransactionList(txList, startIndex, target, done){
     });
 }
 
+function getTransactionListOutOfOrder(txList, target, done){
+    async.each(txList,
+        function(tx, callback){
+            getTransaction(tx, function(txData){
+                target.push(txData.message);
+                callback();
+            });
+        },
+        function(err){
+            done();
+        }
+    );
+}
+
 function getAccountList(accList, startIndex, target, done){
     function pushAccountItem(target, nextIndex,  acc){
         target.push(acc);
@@ -169,9 +184,25 @@ function getAccountList(accList, startIndex, target, done){
     });
 }
 
+function getAccountListOutOfOrder(accList, target, done){
+    async.each(accList,
+        function(acc, callback){
+            getAccount(acc, function(accData){
+                target.push(accData.message);
+                callback();
+            });
+        },
+        function(err){
+            done();
+        }
+    );
+}
+
 module.exports = {
     getAccountList : getAccountList,
     getTransactionList : getTransactionList,
+    getTransactionListOutOfOrder : getTransactionListOutOfOrder,
+    getAccountListOutOfOrder : getAccountListOutOfOrder,
     getRecentBlocks : getRecentBlocks,
     getAccount : getAccount,
     getTransaction : getTransaction,

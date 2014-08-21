@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+var async   = require('async');
 var jsonFormat      = require('prettyjson');
 var router = express.Router();
 var burst = require('./burstapi');
@@ -21,8 +22,8 @@ function getRecentInfo(done){
             respond.message.lastHeight = blocckchainStatus.message.numberOfBlocks;
             respond.message.lastBlock  = blocckchainStatus.message.lastBlock;
 
-            var recentBlockCount = 10;
-            if(respond.message.lastBlock < 10){
+            var recentBlockCount = 15;
+            if(respond.message.lastBlock < 15){
                 recentBlockCount = respond.message.lastBlock;
             }
 
@@ -30,34 +31,42 @@ function getRecentInfo(done){
                 var accountList = [];
                 var txList = [];
 
-                for(var i=0; i<respond.message.blocks.length ; i++){
-                    if(accountList.indexOf(respond.message.blocks[i].generator) == -1){
-                        accountList.push(respond.message.blocks[i].generator);
-                        console.log('acc '+respond.message.blocks[i].generator+' gen blk'+respond.message.blocks[i].height);
-                    }
-                    for(var t=0 ; t<respond.message.blocks[i].transactions.length ; t++){
-                        if(txList.indexOf(respond.message.blocks[i].transactions[t]) == -1){
-                            txList.push(respond.message.blocks[i].transactions[t]);
+                async.each(respond.message.blocks,
+                    function(block, callback){
+                        if(accountList.indexOf(block.generator) == -1){
+                            accountList.push(block.generator);
+                            console.log('acc '+block.generator+' gen blk'+block.height);
                         }
+                        for(var t=0 ; t<block.transactions.length ; t++){
+                            if(txList.indexOf(block.transactions[t]) == -1){
+                                txList.push(block.transactions[t]);
+                            }
+                        }
+                        callback();
+                    },
+                    function(err){
+                        burst.getTransactionListOutOfOrder(txList, respond.message.transactions, function(){
+                            async.each(respond.message.transactions,
+                                function(tx, callback){
+                                    if(accountList.indexOf(tx.sender) == -1){
+                                        accountList.push(tx.sender);
+                                        console.log('acc '+tx.sender+' sender tx '+tx.transaction);
+                                    }
+                                    if(accountList.indexOf(tx.recipient) == -1){
+                                        accountList.push(tx.recipient);
+                                        console.log('acc '+tx.recipient+' recipient tx '+tx.transaction);
+                                    }
+                                    callback();
+                                },
+                                function(err){
+                                    burst.getAccountListOutOfOrder(accountList, respond.message.accounts, function(){
+                                        done(respond);
+                                    });
+                                }
+                            );
+                        });
                     }
-                }
-
-                burst.getTransactionList(txList, 0, respond.message.transactions, function(){
-                   for(var n=0 ; n<respond.message.transactions.length ; n++){
-                       if(accountList.indexOf(respond.message.transactions[n].sender) == -1){
-                           accountList.push(respond.message.transactions[n].sender);
-                           console.log('acc '+respond.message.transactions[n].sender+' sender tx '+respond.message.transactions[n].transaction);
-                       }
-                       if(accountList.indexOf(respond.message.transactions[n].recipient) == -1){
-                           accountList.push(respond.message.transactions[n].recipient);
-                           console.log('acc '+respond.message.transactions[n].recipient+' recipient tx '+respond.message.transactions[n].transaction);
-                       }
-                   }
-
-                    burst.getAccountList(accountList, 0, respond.message.accounts, function(){
-                       done(respond);
-                   });
-                });
+                );
             });
         }
     });
