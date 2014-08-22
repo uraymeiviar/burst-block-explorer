@@ -21,6 +21,7 @@ function preprocessTxData(data){
 function renderTransactionHtml(txid,data, done) {
     getTemplate('/templates/transaction.template', function(template) {
         preprocessTxData(data);
+        console.log(data);
         done(Mustache.render(template, data));
     });
 }
