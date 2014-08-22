@@ -88,6 +88,22 @@ hr {
     text-align: right;
     float:right;
     padding-right:0.5em;
+}
+
+.github-link{
+    background-color:#5BA398;
+    background-image: url(https://favicons.githubusercontent.com/github.com);
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    background-position: 50% 12px;
+    min-width: 48px;
+    min-height: 48px;
+    float:right;
+    color:#000;
+    font-size:0.25em;
+    vertical-align: bottom;
+    text-align: center;
+    padding:0;
     margin-right: 2em;
 }
 
