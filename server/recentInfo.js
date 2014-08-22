@@ -73,9 +73,14 @@ function getRecentInfo(done){
 }
 
 router.get('/', function(clientReq, clientRes) {
-    getRecentInfo(function(response){
-        clientRes.send(JSON.stringify(response));
-    });
+    try{
+        getRecentInfo(function(response){
+            clientRes.send(JSON.stringify(response));
+        });
+    }
+    catch(ex){
+        console.log(jsonFormat.render(ex));
+    }
 });
 
 module.exports = router;

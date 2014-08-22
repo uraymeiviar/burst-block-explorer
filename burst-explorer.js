@@ -36,6 +36,13 @@ app.use(function(req, res, next) {
     next(err);
 });
 
+domain = require('domain'),
+    d = domain.create();
+
+d.on('error', function(err) {
+    console.error(err);
+});
+
 
 app.set('port', process.env.PORT || BurstConfig.httpPort);
 

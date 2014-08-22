@@ -2,6 +2,7 @@ var express = require('express');
 var request = require('request');
 var burst = require('./burstapi');
 var async = require('async');
+var jsonFormat      = require('prettyjson');
 var router = express.Router();
 
 function getRelatedBlock(block, done){
@@ -63,6 +64,9 @@ function getRelatedTransaction(block, target, done){
             }
         );
     }
+    else{
+        done();
+    }
 }
 
 function getRelatedAccount(block, done){
@@ -96,30 +100,35 @@ function getRelatedAccount(block, done){
 }
 
 router.get('/:blkid', function(clientReq, clientRes) {
-    burst.getBlock(clientReq.params['blkid'], function(response){
-        var block = response.message;
-        block.transactionsData = [];
+    try{
+        burst.getBlock(clientReq.params['blkid'], function(response){
+            var block = response.message;
+            block.transactionsData = [];
 
-        async.parallel(
-            {
-                relatedBlock: function(callback){
-                    getRelatedBlock(block,function(){
-                        callback(null,null);
-                    })
-                },
-                relatedTx: function(callback){
-                    getRelatedTransaction(block, block.transactionsData, function(){
-                        getRelatedAccount(block,function(){
+            async.parallel(
+                {
+                    relatedBlock: function(callback){
+                        getRelatedBlock(block,function(){
                             callback(null,null);
+                        })
+                    },
+                    relatedTx: function(callback){
+                        getRelatedTransaction(block, block.transactionsData, function(){
+                            getRelatedAccount(block,function(){
+                                callback(null,null);
+                            });
                         });
-                    });
+                    }
+                },
+                function(err, results){
+                    clientRes.send(JSON.stringify(response));
                 }
-            },
-            function(err, results){
-                clientRes.send(JSON.stringify(response));
-            }
-        );
-    });
+            );
+        });
+    }
+    catch(ex){
+        console.log(jsonFormat.render(ex));
+    }
 });
 
 module.exports = router;

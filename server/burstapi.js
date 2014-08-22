@@ -1,5 +1,6 @@
 var request = require('request');
 var async   = require('async');
+var jsonFormat      = require('prettyjson');
 
 function getAccountTx(accId, blocktime, done){
     request.post({
@@ -138,11 +139,22 @@ function getTransaction(txid, done){
             };
             if (!error && res.statusCode == 200) {
                 respond.message = JSON.parse(body);
-                var txType = respond.message.type;
-                var txSubType = respond.message.subtype;
-                respond.message.type = BurstConfig.walletConstant.transactionTypes[txType].description;
-                respond.message.subtype = BurstConfig.walletConstant.transactionTypes[txType].subtypes[txSubType].description;
-                respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
+                if( respond.message.hasOwnProperty('type') &&
+                    respond.message.hasOwnProperty('subtype')){
+
+                    var txType = respond.message.type;
+                    var txSubType = respond.message.subtype;
+
+                    if(BurstConfig.walletConstant.transactionTypes.indexOf(txType) != -1){
+                        respond.message.type = BurstConfig.walletConstant.transactionTypes[txType].description;
+                        respond.message.subtype = BurstConfig.walletConstant.transactionTypes[txType].subtypes[txSubType].description;
+                    }
+                    else {
+                        respond.message.type = 'unknown';
+                        respond.message.subtype = 'unknown';
+                    }
+                    respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
+                }
             }
             else {
                 respond.status  = false;
@@ -270,23 +282,29 @@ function getAccountListOutOfOrder(accList, target, done){
 }
 
 function updateRecentState(burst){
-    getState(function(state){
-        if(state.status === true){
-            var oldBlock = '';
-            if(burst.state != null){
-                oldBlock = burst.state.lastBlock;
+    try{
+        getState(function(state){
+            if(state.status === true){
+                var oldBlock = '';
+                if(burst.state != null){
+                    oldBlock = burst.state.lastBlock;
+                }
+                burst.state = state.message;
+                if(oldBlock != burst.state.lastBlock){
+                    burst.getBlock(burst.state.lastBlock, function(block){
+                        if(block.status === true){
+                            burst.lastBlock = block.message;
+                            console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
+                        }
+                    })
+                }
             }
-            burst.state = state.message;
-            if(oldBlock != burst.state.lastBlock){
-                burst.getBlock(burst.state.lastBlock, function(block){
-                    if(block.status === true){
-                        burst.lastBlock = block.message;
-                        console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
-                    }
-                })
-            }
-        }
-    });
+        });
+    }
+    catch(ex){
+        console.log(jsonFormat.render(ex));
+    }
+
 }
 
 module.exports = {

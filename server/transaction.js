@@ -1,6 +1,7 @@
 var express = require('express');
 var request = require('request');
 var burst = require('./burstapi');
+var jsonFormat      = require('prettyjson');
 var async = require('async');
 var router = express.Router();
 
@@ -31,29 +32,34 @@ function getTxRelatedAccount(tx, done){
 }
 
 router.get('/:txid', function(clientReq, clientRes) {
-    burst.getTransaction(clientReq.params['txid'], function(response){
-        async.parallel(
-            {
-                account : function(callback){
-                    getTxRelatedAccount(response.message, function(){
-                        callback();
-                    });
+    try{
+        burst.getTransaction(clientReq.params['txid'], function(response){
+            async.parallel(
+                {
+                    account : function(callback){
+                        getTxRelatedAccount(response.message, function(){
+                            callback();
+                        });
+                    },
+                    block : function(callback){
+                        burst.getBlock(response.message.block, function(block){
+                            if(block.status === true){
+                                response.message.blockData = block.message;
+                            }
+                            callback();
+                        })
+                    }
                 },
-                block : function(callback){
-                    burst.getBlock(response.message.block, function(block){
-                        if(block.status === true){
-                            response.message.blockData = block.message;
-                        }
-                        callback();
-                    })
+                function(err, results){
+                    clientRes.send(JSON.stringify(response));
                 }
-            },
-            function(err, results){
-                clientRes.send(JSON.stringify(response));
-            }
-        );
+            );
 
-    });
+        });
+    }
+    catch(ex){
+        console.log(jsonFormat.render(ex));
+    }
 });
 
 module.exports = router;
