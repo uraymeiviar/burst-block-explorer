@@ -164,11 +164,17 @@ router.get('/:accid', function(clientReq, clientRes) {
                     {
                         relatedTx: function(callback){
                             getAccountRecentTx(accId,20,response.message.recentTx, function(){
+                                response.message.recentTx.sort(function(a,b){
+                                    return b.timestamp - a.timestamp;
+                                });
                                 callback(null, null);
                             });
                         },
                         relatedBlock: function(callback){
                             getAccountBlockGen(accId,20,response.message.blockGenerated, function(){
+                                response.message.blockGenerated.sort(function(a,b){
+                                    return b.timestamp - a.timestamp;
+                                });
                                 callback(null, null);
                             });
                         }

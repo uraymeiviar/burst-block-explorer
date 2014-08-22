@@ -10,7 +10,7 @@ var txDataCacheIndex = [];
 var accDataCacheIndex = [];
 var blkDataCacheIndex = [];
 
-var maxCacheLen = 2;
+var maxCacheLen = 256;
 
 function getAccountTx(accId, blocktime, done){
     request.post({
