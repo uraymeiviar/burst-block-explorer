@@ -79,6 +79,9 @@ router.get('/', function(clientReq, clientRes) {
         }
         else {
             getRecentInfo(function(response){
+                response.message.transactions.sort(function(a,b){
+                   return b.timestamp - a.timestamp;
+                });
                 var result = JSON.stringify(response);
                 clientRes.send(result);
                 burst.recentInfoCache =  result;
