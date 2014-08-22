@@ -153,28 +153,38 @@ function getAccountBlockGen(accId, count, target, done){
 
 router.get('/:accid', function(clientReq, clientRes) {
     try{
-        burst.getAccount(clientReq.params['accid'], function(response){
-            response.message.recentTx = [];
-            response.message.blockGenerated = [];
+        var accId = clientReq.params['accid'];
+        var cacheData = burst.getAccountFromCache(accId);
+        if(cacheData == null){
+            burst.getAccount(accId, function(response){
+                response.message.recentTx = [];
+                response.message.blockGenerated = [];
 
-            async.parallel(
-                {
-                    relatedTx: function(callback){
-                        getAccountRecentTx(clientReq.params['accid'],20,response.message.recentTx, function(){
-                            callback(null, null);
-                        });
+                async.parallel(
+                    {
+                        relatedTx: function(callback){
+                            getAccountRecentTx(accId,20,response.message.recentTx, function(){
+                                callback(null, null);
+                            });
+                        },
+                        relatedBlock: function(callback){
+                            getAccountBlockGen(accId,20,response.message.blockGenerated, function(){
+                                callback(null, null);
+                            });
+                        }
                     },
-                    relatedBlock: function(callback){
-                        getAccountBlockGen(clientReq.params['accid'],20,response.message.blockGenerated, function(){
-                            callback(null, null);
-                        });
+                    function(err, results){
+                        var result = JSON.stringify(response);
+                        clientRes.send(result);
+                        burst.addAccountToCache(accId, result);
                     }
-                },
-                function(err, results){
-                    clientRes.send(JSON.stringify(response));
-                }
-            );
-        });
+                );
+            });
+        }
+        else {
+            clientRes.send(cacheData);
+            console.log('account '+accId+' sent from cache');
+        }
     }
     catch(ex){
         console.log(jsonFormat.render(ex));

@@ -33,29 +33,39 @@ function getTxRelatedAccount(tx, done){
 
 router.get('/:txid', function(clientReq, clientRes) {
     try{
-        burst.getTransaction(clientReq.params['txid'], function(response){
-            async.parallel(
-                {
-                    account : function(callback){
-                        getTxRelatedAccount(response.message, function(){
-                            callback();
-                        });
+        var txId = clientReq.params['txid'];
+        var cacheData = burst.getTxFromCache(txId);
+        if(cacheData == null){
+            burst.getTransaction(txId, function(response){
+                async.parallel(
+                    {
+                        account : function(callback){
+                            getTxRelatedAccount(response.message, function(){
+                                callback();
+                            });
+                        },
+                        block : function(callback){
+                            burst.getBlock(response.message.block, function(block){
+                                if(block.status === true){
+                                    response.message.blockData = block.message;
+                                }
+                                callback();
+                            })
+                        }
                     },
-                    block : function(callback){
-                        burst.getBlock(response.message.block, function(block){
-                            if(block.status === true){
-                                response.message.blockData = block.message;
-                            }
-                            callback();
-                        })
+                    function(err, results){
+                        var result = JSON.stringify(response);
+                        clientRes.send(result);
+                        burst.addTxToCache(txId,result);
                     }
-                },
-                function(err, results){
-                    clientRes.send(JSON.stringify(response));
-                }
-            );
+                );
 
-        });
+            });
+        }
+        else {
+            clientRes.send(cacheData);
+            console.log('tx '+txId+' sent from cache');
+        }
     }
     catch(ex){
         console.log(jsonFormat.render(ex));

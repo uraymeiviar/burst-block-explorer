@@ -74,9 +74,16 @@ function getRecentInfo(done){
 
 router.get('/', function(clientReq, clientRes) {
     try{
-        getRecentInfo(function(response){
-            clientRes.send(JSON.stringify(response));
-        });
+        if(burst.recentInfoCache != null){
+            clientRes.send(burst.recentInfoCache);
+        }
+        else {
+            getRecentInfo(function(response){
+                var result = JSON.stringify(response);
+                clientRes.send(result);
+                burst.recentInfoCache =  result;
+            });
+        }
     }
     catch(ex){
         console.log(jsonFormat.render(ex));

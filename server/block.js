@@ -99,32 +99,47 @@ function getRelatedAccount(block, done){
     );
 }
 
+function queryBlock(blkId, done){
+    burst.getBlock(blkId, function(response){
+        var block = response.message;
+        block.transactionsData = [];
+        async.parallel(
+            {
+                relatedBlock: function(callback){
+                    getRelatedBlock(block,function(){
+                        callback(null,null);
+                    })
+                },
+                relatedTx: function(callback){
+                    getRelatedTransaction(block, block.transactionsData, function(){
+                        getRelatedAccount(block,function(){
+                            callback(null,null);
+                        });
+                    });
+                }
+            },
+            function(err, results){
+                done(response);
+            }
+        );
+    });
+}
+
 router.get('/:blkid', function(clientReq, clientRes) {
     try{
-        burst.getBlock(clientReq.params['blkid'], function(response){
-            var block = response.message;
-            block.transactionsData = [];
-
-            async.parallel(
-                {
-                    relatedBlock: function(callback){
-                        getRelatedBlock(block,function(){
-                            callback(null,null);
-                        })
-                    },
-                    relatedTx: function(callback){
-                        getRelatedTransaction(block, block.transactionsData, function(){
-                            getRelatedAccount(block,function(){
-                                callback(null,null);
-                            });
-                        });
-                    }
-                },
-                function(err, results){
-                    clientRes.send(JSON.stringify(response));
-                }
-            );
-        });
+        var blkId = clientReq.params['blkid'];
+        var cacheResult = burst.getBlockFromCache(blkId);
+        if(cacheResult == null){
+            queryBlock(blkId, function(response){
+                var result = JSON.stringify(response);
+                clientRes.send(result);
+                burst.addBlockToCache(blkId, result);
+            });
+        }
+        else {
+            clientRes.send(cacheResult);
+            console.log('block '+blkId+' sent from cache');
+        }
     }
     catch(ex){
         console.log(jsonFormat.render(ex));

@@ -2,6 +2,16 @@ var request = require('request');
 var async   = require('async');
 var jsonFormat      = require('prettyjson');
 
+var txDataCache = {};
+var accDataCache = {};
+var blkDataCache = {};
+
+var txDataCacheIndex = [];
+var accDataCacheIndex = [];
+var blkDataCacheIndex = [];
+
+var maxCacheLen = 2;
+
 function getAccountTx(accId, blocktime, done){
     request.post({
         url:BurstConfig.walletUrl,
@@ -281,6 +291,20 @@ function getAccountListOutOfOrder(accList, target, done){
     );
 }
 
+
+function updateCacheByNewBlock(blkId){
+    clearAccountCache();
+    /*
+    queryBlock(blkId, function(response){
+        var result = JSON.stringify(response);
+        addBlockToCache(blkId, result);
+        for(var i=0 ; i<response.message.relatedAccounts.length ; i++){
+            removeAccountFromCache(response.message.relatedAccounts[i]);
+        }
+    });
+    */
+}
+
 function updateRecentState(burst){
     try{
         getState(function(state){
@@ -291,9 +315,11 @@ function updateRecentState(burst){
                 }
                 burst.state = state.message;
                 if(oldBlock != burst.state.lastBlock){
+                    burst.recentInfoCache = null;
                     burst.getBlock(burst.state.lastBlock, function(block){
                         if(block.status === true){
                             burst.lastBlock = block.message;
+                            updateCacheByNewBlock(block.message.blockId);
                             console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
                         }
                     })
@@ -304,7 +330,113 @@ function updateRecentState(burst){
     catch(ex){
         console.log(jsonFormat.render(ex));
     }
+}
 
+function addBlockToCache(blkId, data){
+    if(blkDataCache.hasOwnProperty(blkId)){
+        blkDataCache[blkId] = data;
+        console.log('block '+blkId+' cache updated');
+    }
+    else {
+        blkDataCache[blkId] = data;
+        var newLen = blkDataCacheIndex.push(blkId);
+        console.log('block '+blkId+' added to cache');
+        if(newLen > maxCacheLen){
+            var idToRemove = blkDataCacheIndex.shift();
+            delete blkDataCache[idToRemove];
+            console.log('block '+idToRemove+' removed from cache');
+        }
+    }
+}
+
+function removeBlockFromCache(blkId){
+    var index = blkDataCacheIndex.indexOf(blkId);
+    if(index >= 0){
+        blkDataCacheIndex.splice(index,1);
+    }
+    delete blkDataCache[blkId];
+}
+
+function getBlockFromCache(blkId){
+    if(blkDataCache.hasOwnProperty(blkId)){
+        return blkDataCache[blkId];
+    }
+    else{
+        return null;
+    }
+}
+
+function addTxToCache(txId, data){
+    if(txDataCache.hasOwnProperty(txId)){
+        txDataCache[txId] = data;
+        console.log('tx '+txId+' cache updated');
+    }
+    else {
+        txDataCache[txId] = data;
+        var newLen = txDataCacheIndex.push(txId);
+        console.log('tx '+txId+' added to cache');
+        if(newLen > maxCacheLen){
+            var idToRemove = txDataCacheIndex.shift();
+            delete txDataCache[idToRemove];
+            console.log('tx '+idToRemove+' removed from cache');
+        }
+    }
+}
+
+function removeTxFromCache(txId){
+    var index = txDataCacheIndex.indexOf(txId);
+    if(index >= 0){
+        txDataCacheIndex.splice(index,1);
+    }
+    delete txDataCache[txId];
+}
+
+function getTxFromCache(txId){
+    if(txDataCache.hasOwnProperty(txId)){
+        return txDataCache[txId];
+    }
+    else{
+        return null;
+    }
+}
+
+function addAccountToCache(accId, data){
+    if(accDataCache.hasOwnProperty(accId)){
+        accDataCache[accId] = data;
+        console.log('tx '+accId+' cache updated');
+    }
+    else {
+        accDataCache[accId] = data;
+        var newLen = accDataCacheIndex.push(accId);
+        console.log('tx '+accId+' added to cache');
+        if(newLen > maxCacheLen){
+            var idToRemove = accDataCacheIndex.shift();
+            delete accDataCache[idToRemove];
+            console.log('tx '+idToRemove+' removed from cache');
+        }
+    }
+}
+
+function removeAccountFromCache(accId){
+    var index = txDataCacheIndex.indexOf(accId);
+    if(index >= 0){
+        accDataCacheIndex.splice(index,1);
+    }
+    delete accDataCache[accId];
+}
+
+function getAccountFromCache(accId){
+    if(accDataCache.hasOwnProperty(accId)){
+        return accDataCache[accId];
+    }
+    else{
+        return null;
+    }
+}
+
+function clearAccountCache(){
+    accDataCache = {};
+    accDataCacheIndex = [];
 }
 
 module.exports = {
@@ -321,7 +453,17 @@ module.exports = {
     getBlockChainStatus : getBlockChainStatus,
     state : null,
     lastBlock : null,
-    update : updateRecentState
+    update : updateRecentState,
+    recentInfoCache : null,
+    addBlockToCache : addBlockToCache,
+    removeBlockFromCache : removeBlockFromCache,
+    getBlockFromCache : getBlockFromCache,
+    addTxToCache : addTxToCache,
+    removeTxFromCache : removeTxFromCache,
+    getTxFromCache : getTxFromCache,
+    addAccountToCache : addAccountToCache,
+    removeAccountFromCache : removeAccountFromCache,
+    getAccountFromCache : getAccountFromCache
 };
 
 
