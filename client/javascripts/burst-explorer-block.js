@@ -71,6 +71,7 @@ function initPageBlock() {
         var id = event.target.id;
         var blkid = id.split('-')[1];
         $('#BlockDetailInfo-'+blkid).toggle();
+        $('#BlockDetailTx-'+blkid).toggle();
         /*
         if($('#BlockDetailInfo-'+blkid).toggle().is(':visible')){
             $('#BlockDetailInfo-'+blkid).removeClass('Hidden');
