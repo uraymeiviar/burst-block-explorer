@@ -11,6 +11,7 @@ var transaction     = require('./server/transaction');
 var block           = require('./server/block');
 var index           = require('./server/index');
 var recentInfo      = require('./server/recentInfo');
+var burst           = require('./server/burstapi');
 BurstConfig         = require('./burst-config');
 
 var app = express();
@@ -64,6 +65,8 @@ request.post( {
                     console.log(jsonFormat.render(BurstConfig.walletConstant));
                     console.log('current timestamp '+currentTime);
                     console.log("genesis-block timestamp "+BurstConfig.genesisBlockTimestamp);
+
+                    setInterval(function(){burst.update(burst)},1000);
                 }
             );
         }

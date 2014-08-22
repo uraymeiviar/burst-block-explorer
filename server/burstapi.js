@@ -1,11 +1,82 @@
 var request = require('request');
 var async   = require('async');
 
+function getAccountTx(accId, blocktime, done){
+    request.post({
+        url:BurstConfig.walletUrl,
+        form:{
+            requestType:'getAccountTransactionIds',
+            account: accId,
+            timestamp: blocktime
+        }
+    }, function(error, res, body){
+        var respond = {
+            status : true,
+            message : null
+        };
+        if (!error && res.statusCode == 200) {
+            respond.message = JSON.parse(body);
+        }
+        else {
+            respond.status  = false;
+            respond.message = 'wallet error, '+res.statusCode;
+        }
+        done(respond);
+    });
+}
+
+function getAccountBlockGen(accId, blocktime, done){
+    request.post({
+        url:BurstConfig.walletUrl,
+        form:{
+            requestType:'getAccountBlockIds',
+            account: accId,
+            timestamp: blocktime
+        }
+    }, function(error, res, body){
+        var respond = {
+            status : true,
+            message : null
+        };
+        if (!error && res.statusCode == 200) {
+            respond.message = JSON.parse(body);
+        }
+        else {
+            respond.status  = false;
+            respond.message = 'wallet error, '+res.statusCode;
+        }
+        done(respond);
+    });
+}
+
 function getBlockChainStatus(done){
     request.post({
         url:BurstConfig.walletUrl,
         form:{
             requestType:'getBlockchainStatus'
+        }
+    }, function(error, res, body){
+        var respond = {
+            status : true,
+            message : null
+        };
+        if (!error && res.statusCode == 200) {
+            respond.message = JSON.parse(body);
+        }
+        else {
+            respond.status  = false;
+            respond.message = 'wallet error, '+res.statusCode;
+        }
+        done(respond);
+    });
+}
+
+
+function getState(done){
+    request.post({
+        url:BurstConfig.walletUrl,
+        form:{
+            requestType:'getState'
         }
     }, function(error, res, body){
         var respond = {
@@ -198,8 +269,30 @@ function getAccountListOutOfOrder(accList, target, done){
     );
 }
 
+function updateRecentState(burst){
+    getState(function(state){
+        if(state.status === true){
+            var oldBlock = '';
+            if(burst.state != null){
+                oldBlock = burst.state.lastBlock;
+            }
+            burst.state = state.message;
+            if(oldBlock != burst.state.lastBlock){
+                burst.getBlock(burst.state.lastBlock, function(block){
+                    if(block.status === true){
+                        burst.lastBlock = block.message;
+                        console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
+                    }
+                })
+            }
+        }
+    });
+}
+
 module.exports = {
     getAccountList : getAccountList,
+    getAccountTx : getAccountTx,
+    getAccountBlockGen : getAccountBlockGen,
     getTransactionList : getTransactionList,
     getTransactionListOutOfOrder : getTransactionListOutOfOrder,
     getAccountListOutOfOrder : getAccountListOutOfOrder,
@@ -207,7 +300,10 @@ module.exports = {
     getAccount : getAccount,
     getTransaction : getTransaction,
     getBlock : getBlock,
-    getBlockChainStatus : getBlockChainStatus
+    getBlockChainStatus : getBlockChainStatus,
+    state : null,
+    lastBlock : null,
+    update : updateRecentState
 };
 
 
