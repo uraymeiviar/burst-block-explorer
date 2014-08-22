@@ -35,7 +35,7 @@ function getRecentInfo(done){
                     function(block, callback){
                         if(accountList.indexOf(block.generator) == -1){
                             accountList.push(block.generator);
-                            console.log('acc '+block.generator+' gen blk'+block.height);
+                            //console.log('acc '+block.generator+' gen blk'+block.height);
                         }
                         for(var t=0 ; t<block.transactions.length ; t++){
                             if(txList.indexOf(block.transactions[t]) == -1){
@@ -50,11 +50,11 @@ function getRecentInfo(done){
                                 function(tx, callback){
                                     if(accountList.indexOf(tx.sender) == -1){
                                         accountList.push(tx.sender);
-                                        console.log('acc '+tx.sender+' sender tx '+tx.transaction);
+                                        //console.log('acc '+tx.sender+' sender tx '+tx.transaction);
                                     }
                                     if(accountList.indexOf(tx.recipient) == -1){
                                         accountList.push(tx.recipient);
-                                        console.log('acc '+tx.recipient+' recipient tx '+tx.transaction);
+                                        //console.log('acc '+tx.recipient+' recipient tx '+tx.transaction);
                                     }
                                     callback();
                                 },

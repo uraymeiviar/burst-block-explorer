@@ -24,7 +24,6 @@ function renderTransactionHtml(txid,data, done) {
         preprocessBlkData(data.blockData);
         preprocessAccData(data.senderData);
         preprocessAccData(data.recipientData);
-        console.log(data);
         done(Mustache.render(template, data));
 
         var snederQr = $('#AccountQR-'+data.senderData.account);

@@ -25,7 +25,6 @@ function renderAccountHtml(accid,data, done) {
         for(var i=0 ; i<data.recentTx.length ; i++){
             preprocessTxData(data.recentTx[i]);
         }
-        console.log(data);
         done(Mustache.render(template, data));
         var qrArea = $('#AccountQR-'+accid);
         qrArea.qrcode({

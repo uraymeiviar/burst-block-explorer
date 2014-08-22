@@ -61,8 +61,6 @@ function renderBlockHtml(blkid,data,done) {
                 "text": data.relatedAccounts[i].accountRS
             });
         }
-
-        console.log(data);
     });
 }
 
