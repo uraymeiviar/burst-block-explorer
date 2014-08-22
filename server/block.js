@@ -47,19 +47,22 @@ function getRelatedBlock(block, done){
 }
 
 function getRelatedTransaction(block, target, done){
-    async.each(block.transactions,
-        function(txid, callback){
-            burst.getTransaction(txid, function(txData){
-                if(txData.status === true){
-                    target[txid] = txData.message;
-                }
-                callback();
-            });
-        },
-        function(err){
-            done();
-        }
-    );
+    if( block.hasOwnProperty('transactions') &&
+        block.transactions.length > 0){
+        async.each(block.transactions,
+            function(txid, callback){
+                burst.getTransaction(txid, function(txData){
+                    if(txData.status === true){
+                        target.push(txData.message);
+                    }
+                    callback();
+                });
+            },
+            function(err){
+                done();
+            }
+        );
+    }
 }
 
 function getRelatedAccount(block, done){
@@ -95,7 +98,7 @@ function getRelatedAccount(block, done){
 router.get('/:blkid', function(clientReq, clientRes) {
     burst.getBlock(clientReq.params['blkid'], function(response){
         var block = response.message;
-        block.transactionsData = {};
+        block.transactionsData = [];
 
         async.parallel(
             {

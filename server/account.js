@@ -94,7 +94,7 @@ function getAccountRecentTx(accId, count, target, done){
                 function(txid, callback){
                     burst.getTransaction(txid, function(txData){
                         if(txData.status === true){
-                            target[txid] = txData.message;
+                            target.push(txData.message);
                         }
                         callback();
                     });
@@ -124,7 +124,7 @@ function getAccountBlockGen(accId, count, target, done){
                 function(blockId, callback){
                     burst.getBlock(blockId, function(blockData){
                         if(blockData.status === true){
-                            target[blockId] = blockData.message;
+                            target.push(blockData.message);
                         }
                         callback();
                     });
@@ -142,8 +142,8 @@ function getAccountBlockGen(accId, count, target, done){
 
 router.get('/:accid', function(clientReq, clientRes) {
     burst.getAccount(clientReq.params['accid'], function(response){
-        response.message.recentTx = {};
-        response.message.blockGenerated = {};
+        response.message.recentTx = [];
+        response.message.blockGenerated = [];
 
         async.parallel(
             {

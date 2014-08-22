@@ -76,6 +76,30 @@ function pageLoadIndex(){
     });
 }
 
+function searchBlock(e){
+    var blockId = $('#searchBlockInputField').val();
+    blockId = blockId.replace(/[^0-9]+/g, '');
+    if(blockId != ''){
+        window.location.href = "/blk/"+blockId;
+    }
+}
+
+function searchTx(e){
+    var txId = $('#searchTxInputField').val();
+    txId = txId.replace(/[^0-9]+/g, '');
+    if(txId != ''){
+        window.location.href = "/tx/"+txId;
+    }
+}
+
+function searchAccount(e){
+    var accId = $('#searchAccountInputField').val();
+    accId = accId.replace(/[^a-zA-Z0-9\-]+/g, '');
+    if(accId != ''){
+        window.location.href = "/acc/"+accId;
+    }
+}
+
 $(document).ready(function(){
     initPageBlock();
     initPageAccount();
@@ -94,6 +118,28 @@ $(document).ready(function(){
     else {
         pageLoadIndex();
     }
+
+    $('#searchGoBtnBlock').click(searchBlock);
+    $('#searchGoBtnTx').click(searchTx);
+    $('#searchGoBtnAccount').click(searchAccount);
+
+    $('#searchBlockInputField').keypress(function(e){
+        if(e.which == 13){
+            searchBlock(e);
+        }
+    });
+
+    $('#searchTxInputField').keypress(function(e){
+        if(e.which == 13){
+            searchTx(e);
+        }
+    });
+
+    $('#searchAccountInputField').keypress(function(e){
+        if(e.which == 13){
+            searchAccount(e);
+        }
+    });
 });
 
 function satoshiToFloat(satoshi){

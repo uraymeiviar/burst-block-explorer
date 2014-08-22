@@ -44,7 +44,24 @@ function preprocessBlkData(data){
 function renderBlockHtml(blkid,data,done) {
     getTemplate('/templates/block.template', function(template) {
         preprocessBlkData(data);
+        for(var i=0 ; i<data.relatedAccounts.length ; i++){
+            preprocessAccData(data.relatedAccounts[i]);
+        }
+        for(var i=0 ; i<data.transactionsData.length ; i++){
+            preprocessTxData(data.transactionsData[i]);
+        }
         done(Mustache.render(template, data));
+
+        for(var i=0 ; i<data.relatedAccounts.length ; i++){
+            var qrArea = $('#AccountQR-'+data.relatedAccounts[i].account);
+            qrArea.qrcode({
+                "size": parseInt(qrArea.innerHeight()),
+                "fill": "#30DA7B",
+                "render": "div",
+                "text": data.relatedAccounts[i].accountRS
+            });
+        }
+
         console.log(data);
     });
 }

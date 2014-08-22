@@ -21,8 +21,27 @@ function preprocessTxData(data){
 function renderTransactionHtml(txid,data, done) {
     getTemplate('/templates/transaction.template', function(template) {
         preprocessTxData(data);
+        preprocessBlkData(data.blockData);
+        preprocessAccData(data.senderData);
+        preprocessAccData(data.recipientData);
         console.log(data);
         done(Mustache.render(template, data));
+
+        var snederQr = $('#AccountQR-'+data.senderData.account);
+        snederQr.qrcode({
+            "size": parseInt(snederQr.innerHeight()),
+            "fill": "#30DA7B",
+            "render": "div",
+            "text": data.senderData.accountRS
+        });
+
+        var recipientQr = $('#AccountQR-'+data.recipientData.account);
+        recipientQr.qrcode({
+            "size": parseInt(recipientQr.innerHeight()),
+            "fill": "#30DA7B",
+            "render": "div",
+            "text": data.recipientData.accountRS
+        });
     });
 }
 

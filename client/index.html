@@ -18,22 +18,28 @@
 </head>
 <body>
 <div id="nav">
-    <div id="pagetitle"><span class="burstLogo">Burst</span> Block Explorer</div>
+    <div id="pagetitle">
+        Burst Block Explorer
+        <div class="titleNote">
+            Please donate to : <span class="Monospaced">BURST-8E8K-WQ2F-ZDZ5-FQWHX</span><br/>
+            to support development, and keep this site alive
+        </div>
+    </div>
     <div class="SearchArea">
         <div class="divCell searchbox searchboxBlock">
             search block
-            <input class="searchinput searchinputBlock" type="text" maxlength="32"/>
-            <input type="button" class="searchinputBtn searchinputBtnBlock" value="&#9701;">
+            <input class="searchinput searchinputBlock" type="text" maxlength="32" id="searchBlockInputField"/>
+            <input type="button" class="searchinputBtn searchinputBtnBlock" value="&#9701;" id="searchGoBtnBlock">
         </div>
         <div class="divCell searchbox searchboxTx">
             search transaction
-            <input class="searchinput searchinputTx" type="text" maxlength="32"/>
-            <input type="button" class="searchinputBtn searchinputBtnTx" value="&#9701;">
+            <input class="searchinput searchinputTx" type="text" maxlength="32" id="searchTxInputField"/>
+            <input type="button" class="searchinputBtn searchinputBtnTx" value="&#9701;" id="searchGoBtnTx">
         </div>
         <div class="divCell searchbox searchboxAccount">
             search account
-            <input class="searchinput searchinputAccount" type="text" maxlength="32"/>
-            <input type="button" class="searchinputBtn searchinputBtnAccount" value="&#9701;">
+            <input class="searchinput searchinputAccount" type="text" maxlength="32" id="searchAccountInputField"/>
+            <input type="button" class="searchinputBtn searchinputBtnAccount" value="&#9701;" id="searchGoBtnAccount">
         </div>
     </div>
 </div>
