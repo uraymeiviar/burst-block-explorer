@@ -1,71 +1,13 @@
 var express = require('express');
-var request = require('request');
 var burst = require('./burstapi');
 var jsonFormat      = require('prettyjson');
-var async = require('async');
 var router = express.Router();
-
-function getTxRelatedAccount(tx, done){
-    async.parallel(
-        {
-            sender: function(callback){
-                burst.getAccount(tx.sender, function(acc){
-                    if(acc.status === true){
-                        tx.senderData = acc.message;
-                    }
-                    callback();
-                });
-            },
-            recipient : function(callback){
-                burst.getAccount(tx.recipient, function(acc){
-                    if(acc.status === true){
-                        tx.recipientData = acc.message;
-                    }
-                    callback();
-                });
-            }
-        },
-        function(err, results){
-            done();
-        }
-    );
-}
 
 router.get('/:txid', function(clientReq, clientRes) {
     try{
-        var txId = clientReq.params['txid'];
-        var cacheData = burst.getTxFromCache(txId);
-        if(cacheData == null){
-            burst.getTransaction(txId, function(response){
-                async.parallel(
-                    {
-                        account : function(callback){
-                            getTxRelatedAccount(response.message, function(){
-                                callback();
-                            });
-                        },
-                        block : function(callback){
-                            burst.getBlock(response.message.block, function(block){
-                                if(block.status === true){
-                                    response.message.blockData = block.message;
-                                }
-                                callback();
-                            })
-                        }
-                    },
-                    function(err, results){
-                        var result = JSON.stringify(response);
-                        clientRes.send(result);
-                        burst.addTxToCache(txId,result);
-                    }
-                );
-
-            });
-        }
-        else {
-            clientRes.send(cacheData);
-            console.log('tx '+txId+' sent from cache');
-        }
+        burst.getFullTransaction(clientReq.params['txid'], function(respond){
+            clientRes.send(JSON.stringify(respond));
+        });
     }
     catch(ex){
         console.log(jsonFormat.render(ex));
