@@ -155,9 +155,14 @@ function getTransaction(txid, done){
                     var txType = respond.message.type;
                     var txSubType = respond.message.subtype;
 
-                    if(BurstConfig.walletConstant.transactionTypes.indexOf(txType) != -1){
+                    if(BurstConfig.walletConstant.transactionTypes.hasOwnProperty(txType)){
                         respond.message.type = BurstConfig.walletConstant.transactionTypes[txType].description;
-                        respond.message.subtype = BurstConfig.walletConstant.transactionTypes[txType].subtypes[txSubType].description;
+                        if(BurstConfig.walletConstant.transactionTypes[txType].subtypes.hasOwnProperty(txSubType)){
+                            respond.message.subtype = BurstConfig.walletConstant.transactionTypes[txType].subtypes[txSubType].description;
+                        }
+                        else{
+                            respond.message.subtype = 'unknown';
+                        }
                     }
                     else {
                         respond.message.type = 'unknown';
