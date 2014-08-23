@@ -154,13 +154,13 @@ function floatToUnitStr(num){
         return '--';
     }
     try{
-        if(num >= 1000000000){
+        if(Math.abs(num) >= 1000000000){
             return (num/1000000000).toFixed(2)+'G';
         }
-        else if( num >= 1000000){
+        else if( Math.abs(num) >= 1000000){
             return (num/1000000).toFixed(2)+'M';
         }
-        else if( num >= 1000){
+        else if( Math.abs(num) >= 1000){
             return (num/1000).toFixed(2)+'K';
         }
         else{

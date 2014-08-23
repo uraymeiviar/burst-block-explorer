@@ -17,8 +17,8 @@
                     </div>
                     <div class="BlockTxCount DivCell">
                         <div class="BlockNumber DivCell" title="Base Target">{{baseTargetStr}}<span class="tinyLabel">{{baseTargetUnit}}</span></div>
-                        <div class="BlockSmallLabel">Round Time <span class="Monospaced" id="RoundTimeValue-{{BLKID}}">{{roundTime}}</span></div>
-                        <div class="BlockSmallLabel">Diff+ <span class="Monospaced"  id="DiffIncValue-{{BLKID}}">{{diffIncrease}}</span></div>
+                        <div class="BlockSmallLabel">Round Time <span id="RoundTimeValue-{{BLKID}}">{{roundTime}}</span></div>
+                        <div class="BlockSmallLabel">Diff Adjust <span class="Monospaced"  id="DiffIncValue-{{BLKID}}">{{diffIncrease}}</span></div>
                     </div>
                 </div>
                 <div class="BlockDetail Hidden" id="BlockDetailInfo-{{BLKID}}">

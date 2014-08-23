@@ -18,6 +18,13 @@ function preprocessBlkData(data){
     data.totalAmountNQTStrUnit = floatToUnitStr(parseFloat(data.totalAmountNQTStr));
     data.blockRewardStrUnit = floatToUnitStr(data.blockReward);
 
+    if(data.hasOwnProperty('previousBlockData')){
+        data.roundTimeNum = data.timestamp - data.previousBlockData.timestamp;
+        var roundElapsed = moment.duration(data.roundTimeNum*1000);
+        data.roundTime = roundElapsed.humanize()+' ('+data.roundTimeNum+'s)';
+        data.diffIncrease = floatToUnitStr(data.baseTarget - data.previousBlockData.baseTarget);
+    }
+
     var diff = data.baseTarget;
     if( diff > 999999999999) {
         diff = diff / 1000000000000;
