@@ -5,7 +5,6 @@ var jsonFormat      = require('prettyjson');
 var router = express.Router();
 var burst = require('./burstapi');
 
-
 function getRecentInfo(done){
     burst.getBlockChainStatus(function(blocckchainStatus){
         var respond = {
@@ -83,6 +82,7 @@ router.get('/', function(clientReq, clientRes) {
                    return b.timestamp - a.timestamp;
                 });
                 var result = JSON.stringify(response);
+                clientRes.setHeader('Cache-Control', 'no-cache');
                 clientRes.send(result);
                 burst.recentInfoCache =  result;
             });

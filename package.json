@@ -13,6 +13,7 @@
     "request" : "*",
     "prettyjson" : "*",
     "async" : "*",
-    "domain" : "*"
+    "domain" : "*",
+    "compression" : "*"
   }
 }

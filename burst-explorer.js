@@ -5,6 +5,7 @@ var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var request         = require('request');
 var jsonFormat      = require('prettyjson');
+var compression     = require('compression')
 
 var account         = require('./server/account');
 var transaction     = require('./server/transaction');
@@ -16,6 +17,9 @@ BurstConfig         = require('./burst-config');
 
 var app = express();
 
+app.use(compression({
+    threshold: 64
+}))
 app.use(logger('dev'));
 app.use(cookieParser());
 

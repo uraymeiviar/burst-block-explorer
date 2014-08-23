@@ -49,7 +49,7 @@
         </div>
     </div>
     <div class="RecentList RecentListTitleTx" id="IndexTransactionList">
-        <div class="RecentListTitle">Transactions in recent Blocks</div>
+        <div class="RecentListTitle">Transactions in Block</div>
         {{#transactionsData}}
             <div class="TransactionContent" id="Transaction-{{TXID}}">
                 <div class="TransactionHeader">
@@ -82,8 +82,8 @@
         {{/transactionsData}}
     </div>
     <div class="RecentList" id="IndexAccountList">
-        <div class="RecentListTitle RecentListTitleAccount">Accounts involved in recent Blocks</div>
-        {{#accounts}}
+        <div class="RecentListTitle RecentListTitleAccount">Accounts involved in Block</div>
+        {{#relatedAccounts}}
             <div class="AccountContent" id="Account-{{ACCID}}">
                 <div class="AccountRS"><a href="/acc/{{accountRS}}">{{accountRS}}</a></div>
                 <div class="AccountNum">{{account}}</div>
@@ -98,6 +98,6 @@
                 </div>
                 <div class="AccountPublicKey Hidden">{{publicKey}}</div>
             </div>
-        {{/accounts}}
+        {{/relatedAccounts}}
     </div>
 </div>

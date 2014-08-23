@@ -6,7 +6,7 @@ var pageCache = fs.readFileSync('client/index.html');
 
 router.get('/', function(req, res) {
     try{
-        res.type('html');
+        res.setHeader('Content-Type', 'text/html');
         res.send(pageCache);
     }
     catch(ex){
