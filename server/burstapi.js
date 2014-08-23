@@ -13,7 +13,7 @@ var blockchainData = {
     lastBlock : null,
     state: null,
     recentInfoCache : null,
-    maxCacheLen : 256
+    maxCacheLen : 32
 };
 
 function getAccountTx(accId, blocktime, done){
@@ -34,7 +34,7 @@ function getAccountTx(accId, blocktime, done){
         }
         else {
             respond.status  = false;
-            respond.message = 'wallet error, '+res.statusCode;
+            respond.message = 'wallet error';
         }
         done(respond);
     });
@@ -58,7 +58,7 @@ function getAccountBlockGen(accId, blocktime, done){
         }
         else {
             respond.status  = false;
-            respond.message = 'wallet error, '+res.statusCode;
+            respond.message = 'wallet error';
         }
         done(respond);
     });
@@ -80,7 +80,7 @@ function getBlockChainStatus(done){
         }
         else {
             respond.status  = false;
-            respond.message = 'wallet error, '+res.statusCode;
+            respond.message = 'wallet error';
         }
         done(respond);
     });
@@ -103,13 +103,13 @@ function getState(done){
         }
         else {
             respond.status  = false;
-            respond.message = 'wallet error, '+res.statusCode;
+            respond.message = 'wallet error';
         }
         done(respond);
     });
 }
 
-function getRelatedBlockFromBlock(block, done){
+function getRelatedBlockFromBlock(block, done, useCache){
     async.parallel(
         {
             prev: function(callback){
@@ -121,7 +121,7 @@ function getRelatedBlockFromBlock(block, done){
                         else {
                             callback(null, null);
                         }
-                    });
+                    },useCache);
                 }
                 else {
                     callback(null, null);
@@ -136,7 +136,7 @@ function getRelatedBlockFromBlock(block, done){
                         else {
                             callback(null, null);
                         }
-                    });
+                    }, useCache);
                 }
                 else {
                     callback(null, null);
@@ -151,7 +151,7 @@ function getRelatedBlockFromBlock(block, done){
     );
 }
 
-function getRelatedTxFromBlock(block, done){
+function getRelatedTxFromBlock(block, done, useCache){
     if(!block.hasOwnProperty('transactionsData')){
         block.transactionsData = [];
     }
@@ -165,7 +165,7 @@ function getRelatedTxFromBlock(block, done){
                         block.transactionsData.push(JSON.parse(txJson));
                     }
                     callback();
-                });
+                }, useCache);
             },
             function(err){
                 done();
@@ -177,7 +177,7 @@ function getRelatedTxFromBlock(block, done){
     }
 }
 
-function getRelatedAccountFromBlock(block, done){
+function getRelatedAccountFromBlock(block, done, useCache){
     if(!block.hasOwnProperty('relatedAccounts')){
         block.relatedAccounts = [];
     }
@@ -204,7 +204,7 @@ function getRelatedAccountFromBlock(block, done){
                     block.relatedAccounts.push(JSON.parse(accJson));
                 }
                 callback();
-            });
+            },useCache);
         },
         function(err){
             done();
@@ -212,21 +212,21 @@ function getRelatedAccountFromBlock(block, done){
     );
 }
 
-function getRelatedDataFromBlock(block, done){
+function getRelatedDataFromBlock(block, done, useCache){
     block.transactionsData = [];
     async.parallel(
         {
             relatedBlock: function(callback){
                 getRelatedBlockFromBlock(block,function(){
                     callback(null,null);
-                })
+                }, useCache);
             },
             relatedTx: function(callback){
                 getRelatedTxFromBlock(block, function(){
                     getRelatedAccountFromBlock(block,function(){
                         callback(null,null);
-                    });
-                });
+                    }, useCache);
+                }, useCache);
             }
         },
         function(err, results){
@@ -235,16 +235,21 @@ function getRelatedDataFromBlock(block, done){
     );
 }
 
-function getFullBlock(blockid, done){
+function getFullBlock(blockid, done, useCache){
     getBlock(blockid,function(respond){
         getRelatedDataFromBlock(respond.message, function(){
             done(respond);
-        })
-    });
+        },useCache);
+    },useCache);
 }
 
-function getBlock(blockid, done){
-    var cacheResult = getBlockFromCache(blockid);
+function getBlock(blockid, done, useCache){
+    var doUseCache = false;
+    var cacheResult = null;
+    if(typeof useCache == 'undefined'){
+        doUseCache = true;
+        cacheResult = getBlockFromCache(blockid);
+    }
     if(cacheResult == null){
         request.post(
             {
@@ -263,11 +268,13 @@ function getBlock(blockid, done){
                     respond.message = JSON.parse(body);
                     respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
                     respond.message.blockId = blockid;
-                    addBlockToCache(blockid, respond.message);
+                    if(doUseCache) {
+                        addBlockToCache(blockid, respond.message);
+                    }
                 }
                 else {
                     respond.status  = false;
-                    respond.message = 'wallet error, '+res.statusCode;
+                    respond.message = 'wallet error';
                 }
                 done(respond);
             }
@@ -283,7 +290,7 @@ function getBlock(blockid, done){
     }
 }
 
-function getRelatedAccountFromTx(tx, done){
+function getRelatedAccountFromTx(tx, done, useCache){
     async.parallel(
         {
             sender: function(callback){
@@ -292,7 +299,7 @@ function getRelatedAccountFromTx(tx, done){
                         tx.senderData = JSON.parse(JSON.stringify(acc.message));
                     }
                     callback();
-                });
+                },useCache);
             },
             recipient : function(callback){
                 getAccount(tx.recipient, function(acc){
@@ -300,7 +307,7 @@ function getRelatedAccountFromTx(tx, done){
                         tx.recipientData = JSON.parse(JSON.stringify(acc.message));
                     }
                     callback();
-                });
+                },useCache);
             }
         },
         function(err, results){
@@ -309,13 +316,13 @@ function getRelatedAccountFromTx(tx, done){
     );
 }
 
-function getRelatedDataFromTx(tx, done){
+function getRelatedDataFromTx(tx, done, useCache){
     async.parallel(
         {
             account : function(callback){
                 getRelatedAccountFromTx(tx, function(){
                     callback();
-                });
+                },useCache);
             },
             block : function(callback){
                 getBlock(tx.block, function(block){
@@ -323,7 +330,7 @@ function getRelatedDataFromTx(tx, done){
                         tx.blockData = JSON.parse(JSON.stringify(block.message));
                     }
                     callback();
-                })
+                }, useCache)
             }
         },
         function(err, results){
@@ -332,16 +339,21 @@ function getRelatedDataFromTx(tx, done){
     );
 }
 
-function getFullTransaction(txid, done){
+function getFullTransaction(txid, done, useCache){
     getTransaction(txid, function(respond){
         getRelatedDataFromTx(respond.message, function(){
            done(respond);
-        });
-    });
+        }, useCache);
+    }, useCache);
 }
 
-function getTransaction(txid, done){
-    var cacheData = getTxFromCache(txid);
+function getTransaction(txid, done, useCache){
+    var doUseCache = false;
+    var cacheData = null;
+    if(typeof useCache == 'undefined'){
+        doUseCache = true;
+        cacheData = getTxFromCache(txid);
+    }
     if(cacheData == null){
         request.post(
             {
@@ -379,11 +391,13 @@ function getTransaction(txid, done){
                         }
                         respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
                     }
-                    addTxToCache(txid,respond.message);
+                    if(doUseCache){
+                        addTxToCache(txid,respond.message);
+                    }
                 }
                 else {
                     respond.status  = false;
-                    respond.message = 'wallet error, '+res.statusCode;
+                    respond.message = 'wallet error';
                 }
                 done(respond);
             }
@@ -442,7 +456,7 @@ function getBlocksGeneratedByAccountLoop(accId, queryTimestamp, count, target, d
     });
 }
 
-function getBlocksGeneratedByAccount(accId, count, target, done){
+function getBlocksGeneratedByAccount(accId, count, target, done, useCache){
     if(blockchainData.lastBlock == null){
         done();
         return;
@@ -464,7 +478,7 @@ function getBlocksGeneratedByAccount(accId, count, target, done){
                             target.push(JSON.parse(blkJson));
                         }
                         callback();
-                    });
+                    },useCache);
                 },
                 function(err){
                     done();
@@ -520,7 +534,7 @@ function getRecentTxByAccountLoop(accId, queryTimestamp, count, target, done){
     });
 }
 
-function getRecentTxByAccount(accId, count, target, done){
+function getRecentTxByAccount(accId, count, target, done, useCache){
     if(blockchainData.lastBlock == null){
         done();
         return;
@@ -542,7 +556,7 @@ function getRecentTxByAccount(accId, count, target, done){
                             target.push(JSON.parse(txJson));
                         }
                         callback();
-                    });
+                    },useCache);
                 },
                 function(err){
                     done();
@@ -555,7 +569,7 @@ function getRecentTxByAccount(accId, count, target, done){
     });
 }
 
-function getRelatedDataFromAccount(acc, done){
+function getRelatedDataFromAccount(acc, done, useCache){
     if(!acc.hasOwnProperty('recentTx')){
         acc.recentTx = [];
     }
@@ -570,7 +584,7 @@ function getRelatedDataFromAccount(acc, done){
                         return b.timestamp - a.timestamp;
                     });
                     callback(null, null);
-                });
+                },useCache);
             },
             relatedBlock: function(callback){
                 getBlocksGeneratedByAccount(acc.account,20,acc.blockGenerated, function(){
@@ -578,7 +592,7 @@ function getRelatedDataFromAccount(acc, done){
                         return b.timestamp - a.timestamp;
                     });
                     callback(null, null);
-                });
+                },useCache);
             }
         },
         function(err, results){
@@ -587,16 +601,22 @@ function getRelatedDataFromAccount(acc, done){
     );
 }
 
-function getFullAccount(accid, done){
+function getFullAccount(accid, done, useCache){
     getAccount(accid, function(response){
        getRelatedDataFromAccount(response.message, function(){
            done(response);
        })
-    });
+    },useCache);
 }
 
-function getAccount(accid, done){
-    var cacheData = getAccountFromCache(accid);
+function getAccount(accid, done, useCache){
+    var doUseCache = false;
+    var cacheData = null;
+    if(typeof useCache == 'undefined'){
+        doUseCache = true;
+        cacheData = getAccountFromCache(accid);
+    }
+
     if(cacheData == null){
         request.post(
             {
@@ -614,13 +634,15 @@ function getAccount(accid, done){
                 if (!error && res.statusCode == 200) {
                     respond.message = JSON.parse(body);
                     respond.message.genesisTimestamp = BurstConfig.genesisBlockTimestamp;
+                    if(doUseCache){
+                        addAccountToCache(accid,respond.message);
+                    }
                 }
                 else {
                     respond.status  = false;
-                    respond.message = 'wallet error, '+res.statusCode;
+                    respond.message = 'wallet error';
                 }
                 done(respond);
-                addAccountToCache(accid,respond.message);
             }
         );
     }
@@ -767,18 +789,21 @@ function updateRecentState(){
 }
 
 function addBlockToCache(blkId, data){
-    if(getClientState().blkDataCache.hasOwnProperty(blkId)){
-        getClientState().blkDataCache[blkId] = data;
-        console.log('block '+blkId+' cache updated ('+getClientState().blkDataCacheIndex.length+')');
-    }
-    else {
-        getClientState().blkDataCache[blkId] = data;
-        var newLen = getClientState().blkDataCacheIndex.push(blkId);
-        console.log('block '+blkId+' added to cache ('+getClientState().blkDataCacheIndex.length+')');
-        if(newLen > getClientState().maxCacheLen){
-            var idToRemove = getClientState().blkDataCacheIndex.shift();
-            delete getClientState().blkDataCache[idToRemove];
-            console.log('block '+idToRemove+' removed from cache ('+getClientState().blkDataCacheIndex.length+')');
+
+    if(typeof blkId != 'undefined'){
+        if(getClientState().blkDataCache.hasOwnProperty(blkId)){
+            getClientState().blkDataCache[blkId] = data;
+            console.log('block '+blkId+' cache updated ('+getClientState().blkDataCacheIndex.length+')');
+        }
+        else {
+            getClientState().blkDataCache[blkId] = data;
+            var newLen = getClientState().blkDataCacheIndex.push(blkId);
+            console.log('block '+blkId+' added to cache ('+getClientState().blkDataCacheIndex.length+')');
+            if(newLen > getClientState().maxCacheLen){
+                var idToRemove = getClientState().blkDataCacheIndex.shift();
+                delete getClientState().blkDataCache[idToRemove];
+                console.log('block '+idToRemove+' removed from cache ('+getClientState().blkDataCacheIndex.length+')');
+            }
         }
     }
 }
@@ -787,9 +812,9 @@ function removeBlockFromCache(blkId){
     var index = getClientState().blkDataCacheIndex.indexOf(blkId);
     if(index >= 0){
         getClientState().blkDataCacheIndex.splice(index,1);
+        console.log('block '+blkId+' removed from cache ('+getClientState().blkDataCacheIndex.length+')');
     }
     delete getClientState().blkDataCache[blkId];
-    console.log('block '+blkId+' removed from cache ('+getClientState().blkDataCacheIndex.length+')');
 }
 
 function getBlockFromCache(blkId){
@@ -802,18 +827,21 @@ function getBlockFromCache(blkId){
 }
 
 function addTxToCache(txId, data){
-    if(getClientState().txDataCache.hasOwnProperty(txId)){
-        getClientState().txDataCache[txId] = data;
-        console.log('tx '+txId+' cache updated ('+getClientState().txDataCacheIndex.length+')');
-    }
-    else {
-        getClientState().txDataCache[txId] = data;
-        var newLen = getClientState().txDataCacheIndex.push(txId);
-        console.log('tx '+txId+' added to cache ('+getClientState().txDataCacheIndex.length+')');
-        if(newLen > getClientState().maxCacheLen){
-            var idToRemove = getClientState().txDataCacheIndex.shift();
-            delete getClientState().txDataCache[idToRemove];
-            console.log('tx '+idToRemove+' removed from cache ('+getClientState().txDataCacheIndex.length+')');
+
+    if(typeof txId != 'undefined'){
+        if(getClientState().txDataCache.hasOwnProperty(txId)){
+            getClientState().txDataCache[txId] = data;
+            console.log('tx '+txId+' cache updated ('+getClientState().txDataCacheIndex.length+')');
+        }
+        else {
+            getClientState().txDataCache[txId] = data;
+            var newLen = getClientState().txDataCacheIndex.push(txId);
+            console.log('tx '+txId+' added to cache ('+getClientState().txDataCacheIndex.length+')');
+            if(newLen > getClientState().maxCacheLen){
+                var idToRemove = getClientState().txDataCacheIndex.shift();
+                delete getClientState().txDataCache[idToRemove];
+                console.log('tx '+idToRemove+' removed from cache ('+getClientState().txDataCacheIndex.length+')');
+            }
         }
     }
 }
@@ -822,9 +850,9 @@ function removeTxFromCache(txId){
     var index = getClientState().txDataCacheIndex.indexOf(txId);
     if(index >= 0){
         getClientState().txDataCacheIndex.splice(index,1);
+        console.log('tx '+txId+' removed from cache ('+getClientState().txDataCacheIndex.length+')');
     }
     delete getClientState().txDataCache[txId];
-    console.log('tx '+txId+' removed from cache ('+getClientState().txDataCacheIndex.length+')');
 }
 
 function getTxFromCache(txId){
@@ -842,18 +870,21 @@ function clearTxCache(){
 }
 
 function addAccountToCache(accId, data){
-    if(getClientState().accDataCache.hasOwnProperty(accId)){
-        getClientState().accDataCache[accId] = data;
-        console.log('account '+accId+' cache updated ('+getClientState().accDataCacheIndex.length+')');
-    }
-    else {
-        getClientState().accDataCache[accId] = data;
-        var newLen = getClientState().accDataCacheIndex.push(accId);
-        console.log('account '+accId+' added to cache ('+getClientState().accDataCacheIndex.length+')');
-        if(newLen > getClientState().maxCacheLen){
-            var idToRemove = getClientState().accDataCacheIndex.shift();
-            delete getClientState().accDataCache[idToRemove];
-            console.log('account '+idToRemove+' removed from cache ('+getClientState().accDataCacheIndex.length+')');
+
+    if(typeof accId != 'undefined'){
+        if(getClientState().accDataCache.hasOwnProperty(accId)){
+            getClientState().accDataCache[accId] = data;
+            console.log('account '+accId+' cache updated ('+getClientState().accDataCacheIndex.length+')');
+        }
+        else {
+            getClientState().accDataCache[accId] = data;
+            var newLen = getClientState().accDataCacheIndex.push(accId);
+            console.log('account '+accId+' added to cache ('+getClientState().accDataCacheIndex.length+')');
+            if(newLen > getClientState().maxCacheLen){
+                var idToRemove = getClientState().accDataCacheIndex.shift();
+                delete getClientState().accDataCache[idToRemove];
+                console.log('account '+idToRemove+' removed from cache ('+getClientState().accDataCacheIndex.length+')');
+            }
         }
     }
 }
@@ -862,9 +893,9 @@ function removeAccountFromCache(accId){
     var index = getClientState().txDataCacheIndex.indexOf(accId);
     if(index >= 0){
         getClientState().accDataCacheIndex.splice(index,1);
+        console.log('account '+accId+' removed from cache ('+getClientState().accDataCacheIndex.length+')');
     }
     delete getClientState().accDataCache[accId];
-    console.log('account '+accId+' removed from cache ('+getClientState().accDataCacheIndex.length+')');
 }
 
 function getAccountFromCache(accId){
