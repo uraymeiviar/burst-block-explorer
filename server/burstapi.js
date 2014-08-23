@@ -13,7 +13,7 @@ var blockchainData = {
     lastBlock : null,
     state: null,
     recentInfoCache : null,
-    maxCacheLen : 256
+    maxCacheLen : 64
 };
 
 function getAccountTx(accId, blocktime, done){
