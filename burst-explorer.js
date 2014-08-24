@@ -5,7 +5,8 @@ var logger          = require('morgan');
 var cookieParser    = require('cookie-parser');
 var request         = require('request');
 var jsonFormat      = require('prettyjson');
-var compression     = require('compression')
+var compression     = require('compression');
+var fs              = require('fs');
 
 var account         = require('./server/account');
 var transaction     = require('./server/transaction');
@@ -13,6 +14,7 @@ var block           = require('./server/block');
 var index           = require('./server/index');
 var recentInfo      = require('./server/recentInfo');
 var burst           = require('./server/burstapi');
+var burstStat       = require('./server/burststat');
 BurstConfig         = require('./burst-config');
 
 var app = express();
@@ -71,11 +73,22 @@ request.post( {
                         console.log('HTTP server listening on port ' + app.get('port'));
                     });
 
-                    console.log(jsonFormat.render(BurstConfig.walletConstant));
                     console.log('current timestamp '+currentTime);
                     console.log("genesis-block timestamp "+BurstConfig.genesisBlockTimestamp);
+                    BurstConfig.walletConstant.genesisBlockTimestamp = BurstConfig.genesisBlockTimestamp;
+                    burst.getClientState().constant = BurstConfig.walletConstant;
 
                     setInterval(function(){burst.update(burst)},1000);
+                    /*
+                    var statFile = path.join(__dirname, 'client')+'/stat.json';
+                    burstStat.init(statFile);
+                    burstStat.update(function(){
+                        var statStr = JSON.stringify(burstStat.getStat());
+                        fs.writeFile(statFile, statStr, function(){
+                            console.log('stat file saved to '+statFile);
+                        });
+                    });
+                    */
                 }
             );
         }
