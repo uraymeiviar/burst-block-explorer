@@ -73,8 +73,8 @@ function getRecentInfo(done){
 
 router.get('/', function(clientReq, clientRes) {
     try{
-        if(burst.recentInfoCache != null){
-            clientRes.send(burst.recentInfoCache);
+        if(burst.getClientState().recentInfoCache != ''){
+            clientRes.send(burst.getClientState().recentInfoCache);
         }
         else {
             getRecentInfo(function(response){
@@ -84,7 +84,7 @@ router.get('/', function(clientReq, clientRes) {
                 var result = JSON.stringify(response);
                 clientRes.setHeader('Cache-Control', 'no-cache');
                 clientRes.send(result);
-                burst.recentInfoCache =  result;
+                burst.getClientState().recentInfoCache =  result;
             });
         }
     }

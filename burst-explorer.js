@@ -79,6 +79,7 @@ request.post( {
                     burst.getClientState().constant = BurstConfig.walletConstant;
 
                     setInterval(function(){burst.update(burst)},1000);
+                    /*
                     var statFile = path.join(__dirname, 'client')+'/stat.json';
                     burstStat.init(statFile);
                     burstStat.update(function(){
@@ -87,6 +88,7 @@ request.post( {
                             console.log('stat file saved to '+statFile);
                         });
                     });
+                    */
                 }
             );
         }
