@@ -73,7 +73,7 @@ function getRecentInfo(done){
 
 router.get('/', function(clientReq, clientRes) {
     try{
-        if(burst.getClientState().recentInfoCache != null){
+        if(burst.getClientState().recentInfoCache != ''){
             clientRes.send(burst.getClientState().recentInfoCache);
         }
         else {

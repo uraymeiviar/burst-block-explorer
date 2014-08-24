@@ -657,7 +657,7 @@ function getRecentBlocks(blockId, count, target, done){
 
 function getTransactionList(txList, startIndex, target, done){
     function pushTransactionItem(target, nextIndex,  tx){
-        target.push(tx);
+        target.push(JSON.parse(JSON.stringify(tx)));
         if(nextIndex < txList.length){
             getTransactionList(txList, nextIndex, target, done);
         }
@@ -681,7 +681,7 @@ function getTransactionListOutOfOrder(txList, target, done){
     async.each(txList,
         function(tx, callback){
             getTransaction(tx, function(txData){
-                target.push(txData.message);
+                target.push(JSON.parse(JSON.stringify(txData.message)));
                 callback();
             });
         },
@@ -693,7 +693,7 @@ function getTransactionListOutOfOrder(txList, target, done){
 
 function getAccountList(accList, startIndex, target, done){
     function pushAccountItem(target, nextIndex,  acc){
-        target.push(acc);
+        target.push(JSON.parse(JSON.stringify(acc)));
         if(nextIndex < accList.length){
             getAccountList(accList, nextIndex, target, done);
         }
@@ -717,7 +717,7 @@ function getAccountListOutOfOrder(accList, target, done){
     async.each(accList,
         function(acc, callback){
             getAccount(acc, function(accData){
-                target.push(accData.message);
+                target.push(JSON.parse(JSON.stringify(accData.message)));
                 callback();
             });
         },
@@ -749,7 +749,7 @@ function updateRecentState(){
                 }
                 getClientState().state = state.message;
                 if(oldBlock != getClientState().state.lastBlock){
-                    getClientState().recentInfoCache = null;
+                    getClientState().recentInfoCache = '';
                     getBlock(getClientState().state.lastBlock, function(block){
                         if(block.status === true){
                             getClientState().lastBlock = block.message;
