@@ -659,8 +659,10 @@ function getAccount(accid, done, useCache){
 function getRecentBlocks(blockId, count, target, done){
     function pushRecentBlock(target, count,  block){
         if(target.length > 0){
-            target[target.length-1].previousBlockData = JSON.parse(JSON.stringify(block));
-            block.nextBlockData = JSON.parse(JSON.stringify(target[target.length-1]));
+            var blockJson = JSON.parse(JSON.stringify(block));
+            var nextBlockJson = JSON.parse(JSON.stringify(target[target.length-1]));
+            block.nextBlockData = nextBlockJson;
+            target[target.length-1].previousBlockData = blockJson;
         }
         target.push(block);
         if(target.length+1 < count){
@@ -674,7 +676,7 @@ function getRecentBlocks(blockId, count, target, done){
         if(block.status === true){
             pushRecentBlock(target, count, block.message);
         }
-    });
+    }, false);
 }
 
 function getTransactionList(txList, startIndex, target, done){
@@ -705,7 +707,7 @@ function getTransactionListOutOfOrder(txList, target, done){
             getTransaction(tx, function(txData){
                 target.push(JSON.parse(JSON.stringify(txData.message)));
                 callback();
-            });
+            }, false);
         },
         function(err){
             done();
@@ -741,7 +743,7 @@ function getAccountListOutOfOrder(accList, target, done){
             getAccount(acc, function(accData){
                 target.push(JSON.parse(JSON.stringify(accData.message)));
                 callback();
-            });
+            }, false);
         },
         function(err){
             done();
