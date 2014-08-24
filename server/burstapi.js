@@ -659,8 +659,10 @@ function getAccount(accid, done, useCache){
 function getRecentBlocks(blockId, count, target, done){
     function pushRecentBlock(target, count,  block){
         if(target.length > 0){
-            block.nextBlockData = JSON.parse(JSON.stringify(target[target.length-1]));
-            target[target.length-1].previousBlockData = JSON.parse(JSON.stringify(block));
+            var blockJson = JSON.parse(JSON.stringify(block));
+            var nextBlockJson = JSON.parse(JSON.stringify(target[target.length-1]));
+            block.nextBlockData = nextBlockJson;
+            target[target.length-1].previousBlockData = blockJson;
         }
         target.push(block);
         if(target.length+1 < count){
