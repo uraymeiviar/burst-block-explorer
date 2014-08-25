@@ -433,7 +433,7 @@ function processBlockDiffStat(block, done){
 
 function processBlockStat(block, done){
     function processBlockSeries(thisSeries, prevSeries, maxRecords, thisSeriesInterval){
-        var recentItem = prevSeries[0];
+        var recentItem = JSON.parse(JSON.stringify(prevSeries[0]));
 
         if(thisSeries.length <= 0){
             thisSeries.unshift(recentItem);
