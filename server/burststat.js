@@ -48,6 +48,10 @@ var burstStatTxCount = { //.numberOfTransactions
 var burstStat = {
     lastBlock       : 0,
     lastBlockId     : 0,
+    genesisDiff     : 0,
+    totalCirculation: 0,
+    totalAccount    : 0,
+    isSyncing       : false,
     diff            : burstStatDiff,
     txAmount        : burstStatTxAmount,
     txCount         : burstStatTxCount,
@@ -64,6 +68,11 @@ var burstStat = {
     distAccBalance  : [], //0...1G (x10)
     distTxAmount    : [],  //0...1G (x10)
     init : function() {
+        this.lastBlock = 0;
+        this.lastBlockId = 0;
+        this.genesisDiff = 0;
+        this.totalCirculation = 0;
+        this.isSyncing = false;
         for(var i=this.distBlkGenTime.length ; i<20 ; i++){
             this.distBlkGenTime.push(0);
         }
@@ -76,7 +85,9 @@ var burstStat = {
     }
 };
 
-var activeAccount = {}
+var activeAccount = {};
+var statFile = 'stat.json';
+var accountFile = 'stat-accounts.json';
 
 function processBlockRelatedTx(block){
     if(block.hasOwnProperty('transactionsData')){
@@ -136,14 +147,16 @@ function processBlockRelatedAccount(block, done){
     if(block.hasOwnProperty('relatedAccounts')){
         var accList = block.relatedAccounts;
         accList.forEach(function(acc){
-            if(!activeAccount .hasOwnProperty(acc.account)){
-                activeAccount [acc.account] = {};
-                activeAccount [acc.account].firstSeenAtBlock = block.height;
-                activeAccount [acc.account].txCount = 0;
-                activeAccount [acc.account].spent = 0.0;
-                activeAccount [acc.account].received = 0.0;
+            if(typeof acc.account != 'undefined'){
+                if(!activeAccount .hasOwnProperty(acc.account)){
+                    activeAccount [acc.account] = {};
+                    activeAccount [acc.account].firstSeenAtBlock = block.height;
+                    activeAccount [acc.account].txCount = 0;
+                    activeAccount [acc.account].spent = 0.0;
+                    activeAccount [acc.account].received = 0.0;
+                }
+                activeAccount [acc.account].data = acc;
             }
-            activeAccount [acc.account].data = acc;
         });
     }
 
@@ -158,13 +171,16 @@ function log10(val){
 }
 
 function updateTopBalance(done){
-
     for(var account in activeAccount ) {
         var acc = activeAccount [account];
         var newItem = {
             balance: parseFloat(acc.data.balanceNQT / 100000000.0).toFixed(2),
-            account: acc.data.account
+            account: acc.data.account,
+            accountRS : acc.data.accountRS
         };
+
+        burstStat.totalCirculation = parseFloat(burstStat.totalCirculation) + parseFloat(newItem.balance);
+        burstStat.totalAccount = parseInt(burstStat.totalAccount) + 1;
 
         if(parseFloat(newItem.balance) < 1.0){
             burstStat.distAccBalance[0] = parseInt(burstStat.distAccBalance[0]) + 1;
@@ -200,7 +216,8 @@ function updateTopMiner(done){
         var acc = activeAccount [account];
         var itemMiner = {
             mined: parseFloat(acc.data.forgedBalanceNQT / 100000000.0).toFixed(2),
-            account: acc.data.account
+            account: acc.data.account,
+            accountRS : acc.data.accountRS
         };
         for (var insertNdx = 0; insertNdx < burstStat.accTopMiners.length; insertNdx++) {
             var oldMined = parseFloat(burstStat.accTopMiners[insertNdx].mined);
@@ -226,7 +243,8 @@ function updateTopTx(done){
         var txAmountNum = parseFloat(acc.spent) + parseFloat(acc.received);
         var itemTxAmount = {
             txAmount: txAmountNum.toFixed(2),
-            account: acc.data.account
+            account: acc.data.account,
+            accountRS : acc.data.accountRS
         };
         for (var insertNdx = 0; insertNdx < burstStat.accTopTxAmount.length; insertNdx++) {
             var oldTxAmount = parseFloat(burstStat.accTopTxAmount[insertNdx].txAmount);
@@ -252,7 +270,8 @@ function updateTopActive(done){
         var txCount = parseInt(acc.txCount);
         var itemTxCount = {
             txCount: txCount,
-            account: acc.data.account
+            account: acc.data.account,
+            accountRS : acc.data.accountRS
         };
         for (var insertNdx = 0; insertNdx < burstStat.accMostActive.length; insertNdx++) {
             var oldTxCount = parseFloat(burstStat.accMostActive[insertNdx].txCount);
@@ -278,6 +297,8 @@ function processTopScore(done){
     burstStat.accTopTxAmount = [];
     burstStat.accMostActive = [];
     burstStat.distAccBalance = [];
+    burstStat.totalCirculation = 0;
+    burstStat.totalAccount = 0;
     for(var i=burstStat.distAccBalance.length ; i<10 ; i++){
         burstStat.distAccBalance.push(0);
     }
@@ -344,8 +365,9 @@ function processDiffStat(block,done){
         }
     }
 
+    var blockDiff = parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget);
     var blockStatItem = {
-        diff        : parseFloat(block.baseTarget),
+        diff        : blockDiff,
         blockId     : block.blockId,
         blockHeight : block.height,
         timestamp   : block.timestamp,
@@ -380,7 +402,8 @@ function processRoundTimeStat(block, done){
 
         var item = {
             blockId: block.blockId,
-            roundTime: roundTime
+            roundTime: roundTime,
+            height:block.height
         };
         for (var insertNdx = 0; insertNdx < burstStat.blkFastest.length; insertNdx++) {
             var oldFastestTime = parseFloat(burstStat.blkFastest[insertNdx].roundTime);
@@ -416,10 +439,11 @@ function processRoundTimeStat(block, done){
 }
 
 function processBlockDiffStat(block, done){
-    var diff = parseInt(block.baseTarget);
+    var blockDiff = parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget);
     var item = {
         blockId: block.blockId,
-        diff: diff
+        diff: blockDiff,
+        height:block.height
     };
     for (var insertNdx = 0; insertNdx < burstStat.blkHighestDiff.length; insertNdx++) {
         var oldHighest = parseFloat(burstStat.blkHighestDiff[insertNdx].diff);
@@ -639,6 +663,7 @@ function update(done){
         if(burstStat.lastBlock < latestBlock.height){
             if(burstStat.lastBlockId == 0){
                 burst.getFullBlock(burst.getClientState().constant.genesisBlockId, function(block){
+                    burstStat.genesisDiff = parseInt(block.message.baseTarget);
                     walkBlock(block,done);
                 }, false);
             }
@@ -652,19 +677,50 @@ function update(done){
 }
 
 function init(startFile){
-    fs.readFile(startFile, function(err, data){
+    statFile = startFile;
+    var statFilePart = startFile.split('.');
+    accountFile = statFilePart[0]+'-accounts.'+statFilePart[1];
+    fs.readFile(statFile, function(err, data){
         if(err) {
             burstStat.init();
+            activeAccount = {};
         }
         else {
             burstStat = JSON.parse(data);
+            fs.readFile(accountFile, function(err, accountData){
+                activeAccount = JSON.parse(accountData);
+                console.log('stat last blockheight = '+burstStat.lastBlock+' '+burstStat.lastBlockId);
+            });
         }
     });
+}
+
+function sync(done){
+    if(burstStat.isSyncing === false){
+        burstStat.isSyncing = true;
+        update(function(){
+            var statStr = JSON.stringify(burstStat);
+            fs.writeFile(statFile, statStr, function(){
+                console.log('stat file saved to '+statFile);
+                var accountStr = JSON.stringify(activeAccount);
+                fs.writeFile(accountFile, accountStr, function(){
+                    console.log('stat account file saved to '+accountFile);
+                    burstStat.isSyncing = false;
+                    done();
+                });
+            });
+        });
+    }
+    else{
+        burstStat.isSyncing = false;
+        done();
+    }
 }
 
 module.exports = {
     getStat: getStat,
     getActiveAccount : getActiveAccount,
     update:update,
-    init:init
+    init:init,
+    sync:sync
 };

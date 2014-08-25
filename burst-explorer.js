@@ -82,11 +82,10 @@ request.post( {
 
                     var statFile = path.join(__dirname, 'client')+'/stat.json';
                     burstStat.init(statFile);
-                    burstStat.update(function(){
-                        var statStr = JSON.stringify(burstStat.getStat(),null,2);
-                        fs.writeFile(statFile, statStr, function(){
-                            console.log('stat file saved to '+statFile);
-                        });
+                    burstStat.sync(function(){
+                        burst.getClientState().onNewBlock = function(){
+                            burstStat.sync(function(){});
+                        }
                     });
                 }
             );
