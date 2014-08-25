@@ -79,16 +79,15 @@ request.post( {
                     burst.getClientState().constant = BurstConfig.walletConstant;
 
                     setInterval(function(){burst.update(burst)},1000);
-                    /*
+
                     var statFile = path.join(__dirname, 'client')+'/stat.json';
                     burstStat.init(statFile);
                     burstStat.update(function(){
-                        var statStr = JSON.stringify(burstStat.getStat());
+                        var statStr = JSON.stringify(burstStat.getStat(),null,2);
                         fs.writeFile(statFile, statStr, function(){
                             console.log('stat file saved to '+statFile);
                         });
                     });
-                    */
                 }
             );
         }
