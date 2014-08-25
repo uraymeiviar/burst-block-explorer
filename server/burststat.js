@@ -45,6 +45,14 @@ var burstStatTxCount = { //.numberOfTransactions
     monthly: []  //last  60 (5 years )
 };
 
+var burstStatBlock = { //.numberOfTransactions
+    blocks : [], //last 180 blocks
+    hourly : [], //last 168 (7 days  ) 1 record ~ 15 blocks
+    daily  : [], //last  90 (3 months)
+    weekly : [], //last  96 (2 years )
+    monthly: []  //last  60 (5 years )
+};
+
 var burstStat = {
     lastBlock       : 0,
     lastBlockId     : 0,
@@ -55,6 +63,7 @@ var burstStat = {
     diff            : burstStatDiff,
     txAmount        : burstStatTxAmount,
     txCount         : burstStatTxCount,
+    blocks          : burstStatBlock,
     accMostRich     : [],
     accTopMiners    : [],
     accTopTxAmount  : [],
@@ -331,61 +340,6 @@ function processTopScore(done){
     );
 }
 
-function processDiffStat(block,done){
-    function processDiffSeries(thisSeries, prevSeries, maxRecords, thisSeriesInterval){
-        var recentItem = prevSeries[0];
-
-        if(thisSeries.length <= 0){
-            thisSeries.unshift(recentItem);
-        }
-        else {
-            var secsDiff = recentItem.timestamp - thisSeries[0].timestamp;
-            if(secsDiff > thisSeriesInterval){
-                thisSeries.unshift(recentItem);
-                if(thisSeries.length > maxRecords){
-                    thisSeries.pop();
-                }
-            }
-            else {
-                var diffsum = 0;
-                var ndx = 0;
-                do{
-                    secsDiff = recentItem.timestamp - prevSeries[ndx].timestamp
-                    if(secsDiff < thisSeriesInterval){
-                        diffsum += prevSeries[ndx].diff;
-                        ndx++;
-                    }
-                }while( (secsDiff < thisSeriesInterval) && (ndx < prevSeries.length) );
-
-                thisSeries[0].blockId    = recentItem.blockId;
-                thisSeries[0].height     = recentItem.height;
-                thisSeries[0].diff       = diffsum/parseFloat(ndx);
-                thisSeries[0].timeLength = secsDiff;
-            }
-        }
-    }
-
-    var blockDiff = parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget);
-    var blockStatItem = {
-        diff        : blockDiff,
-        blockId     : block.blockId,
-        blockHeight : block.height,
-        timestamp   : block.timestamp,
-        timeLength  : 0
-    };
-    burstStat.diff.blocks.unshift(blockStatItem);
-
-    processDiffSeries(burstStat.diff.hourly , burstStat.diff.blocks, 168, 60*60);
-    processDiffSeries(burstStat.diff.daily  , burstStat.diff.hourly,  90, 60*60*24);
-    processDiffSeries(burstStat.diff.weekly , burstStat.diff.daily ,  96, 60*60*24*7);
-    processDiffSeries(burstStat.diff.monthly, burstStat.diff.weekly, 120, 60*60*24*30);
-
-    if(burstStat.diff.blocks.length > 180){
-        burstStat.diff.blocks.pop();
-    }
-    done();
-}
-
 function processRoundTimeStat(block, done){
     if(block.hasOwnProperty('previousBlockData') && block.previousBlockData!=null){
         var roundTime = parseInt(block.timestamp) - parseInt(block.previousBlockData.timestamp);
@@ -477,8 +431,8 @@ function processBlockDiffStat(block, done){
     done();
 }
 
-function processTxStat(block,done){
-    function processTxSeries(thisSeries, prevSeries, maxRecords, thisSeriesInterval){
+function processBlockStat(block, done){
+    function processBlockSeries(thisSeries, prevSeries, maxRecords, thisSeriesInterval){
         var recentItem = prevSeries[0];
 
         if(thisSeries.length <= 0){
@@ -493,94 +447,59 @@ function processTxStat(block,done){
                 }
             }
             else {
+                var diffsum = 0;
+                var txSum = 0;
                 var txAmountSum = 0;
+                var fundDistSum = 0;
                 var ndx = 0;
                 do{
-                    secsDiff = recentItem.timestamp - prevSeries[ndx].timestamp;
+                    secsDiff = recentItem.timestamp - prevSeries[ndx].timestamp
                     if(secsDiff < thisSeriesInterval){
-                        txAmountSum += prevSeries[ndx].txAmount;
+                        diffsum       += prevSeries[ndx].diff;
+                        txSum         += prevSeries[ndx].tx;
+                        txAmountSum   += prevSeries[ndx].txAmount;
+                        fundDistSum   += prevSeries[ndx].fundDist;
                         ndx++;
                     }
                 }while( (secsDiff < thisSeriesInterval) && (ndx < prevSeries.length) );
 
                 thisSeries[0].blockId    = recentItem.blockId;
                 thisSeries[0].height     = recentItem.height;
+                thisSeries[0].diff       = diffsum/parseFloat(ndx);
+                thisSeries[0].tx         = txSum/parseFloat(ndx);
                 thisSeries[0].txAmount   = txAmountSum/parseFloat(ndx);
+                thisSeries[0].fundDist   = fundDistSum/parseFloat(ndx);
+                thisSeries[0].accCount   = recentItem.accCount;
                 thisSeries[0].timeLength = secsDiff;
             }
         }
     }
 
+    var blockDiff = parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget);
+    var txCount   = parseFloat(block.numberOfTransactions);
+    var txAmount  = parseFloat(block.totalAmountNQT);
+    var dist      = parseFloat(burstStat.totalCirculation) / parseFloat(burstStat.totalAccount);
+    var accCount  = parseFloat(burstStat.totalAccount);
     var blockStatItem = {
-        txAmount    : parseFloat(block.totalAmountNQT),
+        diff        : blockDiff,
+        tx          : txCount,
+        txAmount    : txAmount,
+        fundDist    : dist,
+        accCount    : accCount,
         blockId     : block.blockId,
         blockHeight : block.height,
         timestamp   : block.timestamp,
         timeLength  : 0
     };
-    burstStat.txAmount.blocks.unshift(blockStatItem);
+    burstStat.blocks.blocks.unshift(blockStatItem);
 
-    processTxSeries(burstStat.txAmount.hourly , burstStat.txAmount.blocks, 168, 60*60);
-    processTxSeries(burstStat.txAmount.daily  , burstStat.txAmount.hourly,  90, 60*60*24);
-    processTxSeries(burstStat.txAmount.weekly , burstStat.txAmount.daily ,  96, 60*60*24*7);
-    processTxSeries(burstStat.txAmount.monthly, burstStat.txAmount.weekly, 120, 60*60*24*30);
+    processBlockSeries(burstStat.blocks.hourly , burstStat.blocks.blocks, 168, 60*60);
+    processBlockSeries(burstStat.blocks.daily  , burstStat.blocks.hourly,  90, 60*60*24);
+    processBlockSeries(burstStat.blocks.weekly , burstStat.blocks.daily ,  96, 60*60*24*7);
+    processBlockSeries(burstStat.blocks.monthly, burstStat.blocks.weekly, 120, 60*60*24*30);
 
-    if(burstStat.txAmount.blocks.length > 180){
-        burstStat.txAmount.blocks.pop();
-    }
-    done();
-}
-
-function processTxCountStat(block,done){
-    function processTxCountSeries(thisSeries, prevSeries, maxRecords, thisSeriesInterval){
-        var recentItem = prevSeries[0];
-
-        if(thisSeries.length <= 0){
-            thisSeries.unshift(recentItem);
-        }
-        else {
-            var secsDiff = recentItem.timestamp - thisSeries[0].timestamp;
-            if(secsDiff > thisSeriesInterval){
-                thisSeries.unshift(recentItem);
-                if(thisSeries.length > maxRecords){
-                    thisSeries.pop();
-                }
-            }
-            else {
-                var txCountSum = 0;
-                var ndx = 0;
-                do{
-                    secsDiff = recentItem.timestamp - prevSeries[ndx].timestamp;
-                    if(secsDiff < thisSeriesInterval){
-                        txCountSum += prevSeries[ndx].txCount;
-                        ndx++;
-                    }
-                }while( (secsDiff < thisSeriesInterval) && (ndx < prevSeries.length) );
-
-                thisSeries[0].blockId    = recentItem.blockId;
-                thisSeries[0].height     = recentItem.height;
-                thisSeries[0].txCount    = txCountSum/parseFloat(ndx);
-                thisSeries[0].timeLength = secsDiff;
-            }
-        }
-    }
-
-    var blockStatItem = {
-        txCount    : parseFloat(block.numberOfTransactions),
-        blockId     : block.blockId,
-        blockHeight : block.height,
-        timestamp   : block.timestamp,
-        timeLength  : 0
-    };
-    burstStat.txCount.blocks.unshift(blockStatItem);
-
-    processTxCountSeries(burstStat.txCount.hourly , burstStat.txCount.blocks, 168, 60*60);
-    processTxCountSeries(burstStat.txCount.daily  , burstStat.txCount.hourly,  90, 60*60*24);
-    processTxCountSeries(burstStat.txCount.weekly , burstStat.txCount.daily ,  96, 60*60*24*7);
-    processTxCountSeries(burstStat.txCount.monthly, burstStat.txCount.weekly, 120, 60*60*24*30);
-
-    if(burstStat.txCount.blocks.length > 180){
-        burstStat.txCount.blocks.pop();
+    if(burstStat.blocks.blocks.length > 180){
+        burstStat.blocks.blocks.pop();
     }
     done();
 }
@@ -592,24 +511,11 @@ function processBlock(block, done){
 
     async.parallel(
         {
-            diff: function(callback){
-                processDiffStat(block, function(){
-                   callback(null,null);
-                });
-            },
-            tx : function(callback){
-                processTxStat(block, function(){
-                   callback(null, null);
-                });
-            },
-            txCount : function(callback){
-                processTxCountStat(block, function(){
-                   callback(null,null);
-                });
-            },
             accList : function(callback){
                 processBlockRelatedAccount(block, function(){
-                    callback(null,null);
+                    processBlockStat(block, function(){
+                        callback(null,null);
+                    });
                 });
             },
             roundTime : function(callback){
