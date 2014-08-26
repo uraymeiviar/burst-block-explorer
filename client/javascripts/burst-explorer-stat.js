@@ -35,6 +35,8 @@ function preprocessStatData(data){
 }
 
 function renderStatHtml(data,done) {
+    $('.MainMenu').removeClass('MainMenuActive');
+    $('#MainMenuStat').addClass('MainMenuActive');
     getTemplate('/templates/stat.template', function(template) {
         preprocessStatData(data);
         done(Mustache.render(template, data));

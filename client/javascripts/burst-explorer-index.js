@@ -53,6 +53,8 @@ function renderIndexHtml(data, done){
 }
 
 function pageLoadIndex(){
+    $('.MainMenu').removeClass('MainMenuActive');
+    $('#MainMenuExplorer').addClass('MainMenuActive');
     $.get('/api/recent', function(res) {
         var respond = JSON.parse(res);
         if(respond.status === true){
