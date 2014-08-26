@@ -1,6 +1,11 @@
 <div class="divTable">
     <div class="RecentList" id="IndexBlockList">
         <div class="chartContainer">
+            <div class="RecentListTitle RecentListTitleBlock">Block Difficulty</div>
+            <div class="RecentListTitleDesc RecentListTitleBlock">Block Difficulty Hourly</div>
+            <canvas class="chartCanvas" id="blockDiffChart"></canvas>
+        </div>
+        <div class="chartContainer">
             <div class="RecentListTitle RecentListTitleBlock">Block Generation Time Distribution</div>
             <canvas class="chartCanvas" id="blockGenChart"></canvas>
         </div>
@@ -36,6 +41,11 @@
     </div>
     <div class="RecentList RecentListTitleTx" id="IndexTransactionList">
         <div class="chartContainer">
+            <div class="RecentListTitle">Transaction Average</div>
+            <div class="RecentListTitleDesc">Total Amount of transactions divided by total active account Hourly<br/>(K Burst/Hour)</div>
+            <canvas class="chartCanvas" id="txChart"></canvas>
+        </div>
+        <div class="chartContainer">
             <div class="RecentListTitle">Transaction Amount Distribution</div>
             <canvas class="chartCanvas" id="txAmountChart"></canvas>
         </div>
@@ -57,6 +67,11 @@
         </div>
     </div>
     <div class="RecentList" id="IndexAccountList">
+        <div class="chartContainer">
+            <div class="RecentListTitle RecentListTitleAccount">Funds Distribution</div>
+            <div class="RecentListTitleDesc RecentListTitleAccount">Total funds in circulation divided by Total active account Hourly</div>
+            <canvas class="chartCanvas" id="fundChart"></canvas>
+        </div>
         <div class="chartContainer">
             <div class="RecentListTitle RecentListTitleAccount">Account Balance Distribution</div>
             <canvas class="chartCanvas" id="accDistChart"></canvas>

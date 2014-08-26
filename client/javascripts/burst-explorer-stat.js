@@ -41,17 +41,17 @@ function renderStatHtml(data,done) {
 
         var blockGenChartdata = {
             labels: [
-                "< 1 sec",
-                "1..180 secs",
-                "180..360 secs",
-                "360..540 secs",
-                "540..720 secs",
-                "720..900 secs",
-                "900..1080 secs",
-                "1080..1260 secs",
-                "1260..1440 secs",
-                "1440..1620 secs",
-                "1620..1800 secs",
+                "< 1 sec ",
+                "1 .. 180 secs ",
+                "180 .. 360 secs ",
+                "360 .. 540 secs ",
+                "540 .. 720 secs ",
+                "720 .. 900 secs ",
+                "900 .. 1080 secs ",
+                "1080 .. 1260 secs ",
+                "1260 .. 1440 secs ",
+                "1440 .. 1620 secs ",
+                "1620 .. 1800 secs ",
                 "> 1800 secs"
             ],
             datasets: [
@@ -76,28 +76,31 @@ function renderStatHtml(data,done) {
             barStrokeWidth : 0,
             barValueSpacing : 3,
             barDatasetSpacing : 1,
-            responsive: true
+            responsive: true,
+            maintainAspectRatio: false,
+            tooltipFillColor: "rgba(64,64,64,0.6)",
+            tooltipFontSize: 12
         };
 
         var canvasElement = $("#blockGenChart");
         var blockGenChartCtx = canvasElement.get(0).getContext("2d");
-        canvasElement.width(canvasElement.parent().innerWidth()+'px');
-        canvasElement.height(canvasElement.parent().innerHeight()+'px');
-        blockGenChartCtx.canvas.width = canvasElement.parent().innerWidth();
-        blockGenChartCtx.canvas.height = canvasElement.parent().innerHeight();
+        //canvasElement.width(canvasElement.parent().width()+'px');
+        //canvasElement.height(canvasElement.parent().height()+'px');
+        blockGenChartCtx.canvas.width = canvasElement.parent().width();
+        blockGenChartCtx.canvas.height = canvasElement.parent().height();
         var blockGenChart = new Chart(blockGenChartCtx).Bar(blockGenChartdata, blockGenChartOpt);
 
         var txAmountChartData = {
             labels: [
-                "< 1",
-                "1..10",
-                "18..100",
-                "100..1K",
-                "1K..10K",
-                "10K..100K",
-                "100K..1M",
-                "1M..10M",
-                "> 10M"
+                "< 1 ",
+                "1 .. 10 ",
+                "10 .. 100 ",
+                "100 .. 1K ",
+                "1K .. 10K ",
+                "10K .. 100K ",
+                "100K .. 1M ",
+                "1M .. 10M ",
+                "> 10M "
             ],
             datasets: [
                 {
@@ -113,24 +116,24 @@ function renderStatHtml(data,done) {
 
         var txCanvasElement = $("#txAmountChart");
         var txAmountChartCtx = txCanvasElement.get(0).getContext("2d");
-        txCanvasElement.width(txCanvasElement.parent().innerWidth()+'px');
-        txCanvasElement.height(txCanvasElement.parent().innerHeight()+'px');
-        txAmountChartCtx.canvas.width = txCanvasElement.parent().innerWidth();
-        txAmountChartCtx.canvas.height = txCanvasElement.parent().innerHeight();
+        //txCanvasElement.width(txCanvasElement.parent().width()+'px');
+        //txCanvasElement.height(txCanvasElement.parent().height()+'px');
+        txAmountChartCtx.canvas.width = txCanvasElement.parent().width();
+        txAmountChartCtx.canvas.height = txCanvasElement.parent().height();
         var txAmountChart = new Chart(txAmountChartCtx).Bar(txAmountChartData, blockGenChartOpt);
 
         var accBalanceChartData = {
             labels: [
-                "< 1",
-                "1..10",
-                "18..100",
-                "100..1K",
-                "1K..10K",
-                "10K..100K",
-                "100K..1M",
-                "1M..10M",
-                "10M..100M",
-                "> 100M"
+                "< 1 ",
+                "1 ..10 ",
+                "10 .. 100 ",
+                "100 .. 1K ",
+                "1K .. 10K ",
+                "10K ..100K ",
+                "100K ..1M ",
+                "1M ..10M ",
+                "10M ..100M ",
+                "> 100M "
             ],
             datasets: [
                 {
@@ -146,11 +149,122 @@ function renderStatHtml(data,done) {
 
         var accCanvasElement = $("#accDistChart");
         var accDistCtx = accCanvasElement.get(0).getContext("2d");
-        accCanvasElement.width(accCanvasElement.parent().innerWidth()+'px');
-        accCanvasElement.height(accCanvasElement.parent().innerHeight()+'px');
-        accDistCtx.canvas.width = accCanvasElement.parent().innerWidth();
-        accDistCtx.canvas.height = accCanvasElement.parent().innerHeight();
+        accCanvasElement.width(accCanvasElement.parent().width()+'px');
+        accCanvasElement.height(accCanvasElement.parent().height()+'px');
+        accDistCtx.canvas.width = accCanvasElement.parent().width();
+        accDistCtx.canvas.height = accCanvasElement.parent().height();
         var accDistChart = new Chart(accDistCtx).Bar(accBalanceChartData, blockGenChartOpt);
+
+        var lineChartOption = {
+            showScale: false,
+            scaleBeginAtZero : false,
+            scaleShowGridLines : false,
+            scaleGridLineColor : "rgba(0,0,0,.05)",
+            scaleGridLineWidth : 1,
+            barShowStroke : false,
+            barStrokeWidth : 0,
+            barValueSpacing : 3,
+            barDatasetSpacing : 1,
+            pointHitDetectionRadius : 0.5,
+            datasetFill : false,
+            pointDot : false,
+            pointDotRadius : 1,
+            responsive: true,
+            bezierCurve : false,
+            maintainAspectRatio: false,
+            tooltipFillColor: "rgba(64,64,64,0.6)",
+            tooltipFontSize: 12
+        };
+
+        var blockDiffChartData = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Block Difficulty",
+                    fillColor: "#5b7997",
+                    strokeColor: "#80a2c5",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    data: []
+                }
+            ]
+        };
+
+        for(var i=data.blocks.hourly.length-1 ; i>=0 ; i--){
+            var timestamp = parseInt(data.blocks.hourly[i].timestamp) + parseInt(data.genesisTimestamp);
+            var timestampStr = moment.utc().seconds(timestamp).format('dddd, MMM Do, hh:mm:ss');
+            blockDiffChartData.labels.push(timestampStr);
+            var diffStr = parseFloat(data.blocks.hourly[i].diff).toFixed(2);
+            blockDiffChartData.datasets[0].data.push(diffStr);
+        }
+
+        var blockDiffCanvasElement = $("#blockDiffChart");
+        var blockDiffCtx = blockDiffCanvasElement.get(0).getContext("2d");
+        blockDiffCanvasElement.width(blockDiffCanvasElement.parent().width()+'px');
+        blockDiffCanvasElement.height(blockDiffCanvasElement.parent().height()+'px');
+        blockDiffCtx.canvas.width = blockDiffCanvasElement.parent().width();
+        blockDiffCtx.canvas.height = blockDiffCanvasElement.parent().height();
+        var blockDiffChart = new Chart(blockDiffCtx).Line(blockDiffChartData, lineChartOption);
+
+        var txChartData = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Transaction Amount",
+                    fillColor: "#8D5A5A",
+                    strokeColor: "#8D5A5A",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    data: []
+                }
+            ]
+        };
+
+        for(var i=data.blocks.hourly.length-1 ; i>=0 ; i--){
+            var timestamp = parseInt(data.blocks.hourly[i].timestamp) + parseInt(data.genesisTimestamp);
+            var timestampStr = moment.utc().seconds(timestamp).format('dddd, MMM Do, hh:mm:ss');
+            txChartData.labels.push(timestampStr);
+            var amountStr = parseFloat(data.blocks.hourly[i].txAmount/(1000*data.blocks.hourly[i].accCount)).toFixed(2);
+            txChartData.datasets[0].data.push(amountStr);
+        }
+
+        var txChartCanvasElement = $("#txChart");
+        var txChartCtx = txChartCanvasElement.get(0).getContext("2d");
+        txChartCanvasElement.width(txChartCanvasElement.parent().width()+'px');
+        txChartCanvasElement.height(txChartCanvasElement.parent().height()+'px');
+        txChartCtx.canvas.width = txChartCanvasElement.parent().width();
+        txChartCtx.canvas.height = txChartCanvasElement.parent().height();
+        var txChart = new Chart(txChartCtx).Line(txChartData, lineChartOption);
+
+        var fundChartData = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Transaction Amount",
+                    fillColor: "#52b173",
+                    strokeColor: "#52b173",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    data: []
+                }
+            ]
+        };
+
+        for(var i=data.blocks.hourly.length-1 ; i>=0 ; i--){
+            var timestamp = parseInt(data.blocks.hourly[i].timestamp) + parseInt(data.genesisTimestamp);
+            var timestampStr = moment.utc().seconds(timestamp).format('dddd, MMM Do, hh:mm:ss');
+            fundChartData.labels.push(timestampStr);
+            var amountStr = parseFloat(data.blocks.hourly[i].fundDist).toFixed(2);
+            fundChartData.datasets[0].data.push(amountStr);
+        }
+
+        var fundChartCanvasElement = $("#fundChart");
+        var fundChartCtx = fundChartCanvasElement.get(0).getContext("2d");
+        fundChartCanvasElement.width(fundChartCanvasElement.parent().width()+'px');
+        fundChartCanvasElement.height(fundChartCanvasElement.parent().height()+'px');
+        fundChartCtx.canvas.width = fundChartCanvasElement.parent().width();
+        fundChartCtx.canvas.height = fundChartCanvasElement.parent().height();
+        var fundChart = new Chart(fundChartCtx).Line(fundChartData, lineChartOption);
     });
 }
 

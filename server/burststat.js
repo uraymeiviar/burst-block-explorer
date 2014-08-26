@@ -33,6 +33,7 @@ var burstStat = {
     lastBlock       : 0,
     lastBlockId     : 0,
     genesisDiff     : 0,
+    genesisTimestamp: 0,
     totalCirculation: 0,
     totalAccount    : 0,
     isSyncing       : false,
@@ -55,6 +56,7 @@ var burstStat = {
         this.genesisDiff = 0;
         this.totalCirculation = 0;
         this.isSyncing = false;
+        this.genesisTimestamp = burst.getClientState().constant.genesisBlockTimestamp;
         for(var i=this.distBlkGenTime.length ; i<20 ; i++){
             this.distBlkGenTime.push(0);
         }

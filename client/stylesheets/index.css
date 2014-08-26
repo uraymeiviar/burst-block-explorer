@@ -36,16 +36,22 @@ hr {
 
 .RecentListTitle{
     padding: 0.5em;
-    font-size: 1em;
+    padding-bottom:0;
+    font-size: 1.2em;
     text-align: right;
 }
 
+.RecentListTitleDesc{
+    font-size: 0.8em;
+    text-align: right;
+    padding-right:0.5em;
+}
 
 
 #nav
 {
     width:100%;
-    height:72px;
+    height:80px;
     position:fixed;
     top:0px;
     font-size:1.25em;
@@ -197,7 +203,7 @@ hr {
 
 #content
 {
-    margin-top:100px;
+    margin-top:110px;
 }
 
 .Monospaced {
@@ -588,6 +594,11 @@ hr {
     margin:2px;
 }
 
+.BlkBackground{
+    background-color: #19222e;
+}
+
+
 .BlockStatListItemHead{
     display: table-cell;
     vertical-align: middle;
@@ -634,6 +645,10 @@ hr {
     color : #291B1B;
 }
 
+.TxBackground{
+    background-color: #291B1B;
+}
+
 .AccStatSelector{
     color:#52b173;
     margin:0.5em;
@@ -644,6 +659,9 @@ hr {
     background-color: #1A2522;
 }
 
+.AccBackground{
+    background-color: #1A2522;
+}
 .AccStatList{
     color:#52b173;
     background-color: #1A2522;
