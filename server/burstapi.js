@@ -13,7 +13,8 @@ var blockchainData = {
     lastBlock : null,
     state: null,
     recentInfoCache : null,
-    maxCacheLen : 64
+    maxCacheLen : 64,
+    onNewBlock : null
 };
 
 function getAccountTx(accId, blocktime, done){
@@ -779,8 +780,11 @@ function updateRecentState(){
                             getClientState().lastBlock = block.message;
                             updateCacheByNewBlock(block.message.blockId);
                             console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
+                            if(getClientState().onNewBlock != null){
+                                getClientState().onNewBlock();
+                            }
                         }
-                    })
+                    });
                 }
             }
         });

@@ -15,6 +15,7 @@ var index           = require('./server/index');
 var recentInfo      = require('./server/recentInfo');
 var burst           = require('./server/burstapi');
 var burstStat       = require('./server/burststat');
+var stat            = require('./server/stat');
 BurstConfig         = require('./burst-config');
 
 var app = express();
@@ -29,8 +30,10 @@ app.use('/api/acc', account);
 app.use('/api/tx', transaction);
 app.use('/api/blk', block);
 app.use('/api/recent',recentInfo);
+app.use('/api/stat',stat);
 app.use(express.static(path.join(__dirname, 'client')));
 app.use('/',index);
+app.use('/stat',index);
 app.use('/acc/*',index);
 app.use('/tx/*',index);
 app.use('/blk/*',index);
@@ -79,16 +82,14 @@ request.post( {
                     burst.getClientState().constant = BurstConfig.walletConstant;
 
                     setInterval(function(){burst.update(burst)},1000);
-                    /*
+
                     var statFile = path.join(__dirname, 'client')+'/stat.json';
                     burstStat.init(statFile);
-                    burstStat.update(function(){
-                        var statStr = JSON.stringify(burstStat.getStat());
-                        fs.writeFile(statFile, statStr, function(){
-                            console.log('stat file saved to '+statFile);
-                        });
+                    burstStat.sync(function(){
+                        burst.getClientState().onNewBlock = function(){
+                            burstStat.sync(function(){});
+                        }
                     });
-                    */
                 }
             );
         }

@@ -21,6 +21,12 @@ function pageLoadBlock(blkid) {
     });
 }
 
+function pageLoadStat() {
+    loadStat(function(html){
+        $('#content').append(html);
+    });
+}
+
 function pageLoadAccount(accId) {
     var accStr = accId.replace(/(^\s+)|(\s+$)/g, '').toUpperCase();
     if(accStr.indexOf('BURST-') == 0) {
@@ -47,6 +53,8 @@ function renderIndexHtml(data, done){
 }
 
 function pageLoadIndex(){
+    $('.MainMenu').removeClass('MainMenuActive');
+    $('#MainMenuExplorer').addClass('MainMenuActive');
     $.get('/api/recent', function(res) {
         var respond = JSON.parse(res);
         if(respond.status === true){
@@ -104,6 +112,7 @@ $(document).ready(function(){
     initPageBlock();
     initPageAccount();
     initPageTransaction();
+    initPageStat();
     var path = $(location)[0].pathname;
     var paths = path.split('/');
     if(paths[1].toLowerCase() == 'blk') {
@@ -114,6 +123,9 @@ $(document).ready(function(){
     }
     else if(paths[1].toLowerCase() == 'tx') {
         pageLoadTransaction(paths[2]);
+    }
+    else if(paths[1].toLowerCase() == 'stat') {
+        pageLoadStat();
     }
     else {
         pageLoadIndex();
