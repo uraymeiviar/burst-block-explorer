@@ -41,7 +41,7 @@
     </div>
     <div class="RecentList RecentListTitleTx" id="IndexTransactionList">
         <div class="chartContainer">
-            <div class="RecentListTitle">Transaction Average</div>
+            <div class="RecentListTitle">Transaction Amount Average</div>
             <div class="RecentListTitleDesc">Total Amount of transactions divided by total active account Hourly<br/>(K Burst/Hour)</div>
             <canvas class="chartCanvas" id="txChart"></canvas>
         </div>
@@ -68,7 +68,7 @@
     </div>
     <div class="RecentList" id="IndexAccountList">
         <div class="chartContainer">
-            <div class="RecentListTitle RecentListTitleAccount">Funds Distribution</div>
+            <div class="RecentListTitle RecentListTitleAccount">Funds Average Distribution</div>
             <div class="RecentListTitleDesc RecentListTitleAccount">Total funds in circulation divided by Total active account Hourly</div>
             <canvas class="chartCanvas" id="fundChart"></canvas>
         </div>

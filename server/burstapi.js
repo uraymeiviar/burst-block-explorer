@@ -14,7 +14,9 @@ var blockchainData = {
     state: null,
     recentInfoCache : null,
     maxCacheLen : 64,
-    onNewBlock : null
+    onNewBlock : null,
+    priceInBtc : null,
+    btcPricInUSD : null
 };
 
 function getAccountTx(accId, blocktime, done){
@@ -764,6 +766,24 @@ function updateCacheByNewBlock(blkId){
     });
 }
 
+function updateRecentPrice(done){
+    getPriceInBTC(function(msg){
+        if(msg.status === true){
+            console.log('BURST price :');
+            getClientState().priceInBtc = msg.message;
+            console.log(jsonFormat.render(msg.message));
+        }
+        getBTCPriceInUSD(function(btcMsg){
+            if(btcMsg.status === true){
+                console.log('BTC price :');
+                getClientState().btcPricInUSD = btcMsg.message;
+                console.log(jsonFormat.render(btcMsg.message));
+                done();
+            }
+        });
+    });
+}
+
 function updateRecentState(){
     try{
         getState(function(state){
@@ -779,10 +799,12 @@ function updateRecentState(){
                         if(block.status === true){
                             getClientState().lastBlock = block.message;
                             updateCacheByNewBlock(block.message.blockId);
-                            console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
-                            if(getClientState().onNewBlock != null){
-                                getClientState().onNewBlock();
-                            }
+                            updateRecentPrice(function(){
+                                console.log('block #'+block.message.height+' '+block.message.blockId+' '+block.message.timestamp+' '+block.message.transactions.length+'tx(s)');
+                                if(getClientState().onNewBlock != null){
+                                    getClientState().onNewBlock();
+                                }
+                            });
                         }
                     });
                 }
@@ -922,6 +944,60 @@ function getClientState() {
     return blockchainData;
 }
 
+function getPriceInBTC(done){
+    request.get('https://c-cex.com/t/burst-btc.json',
+        function(error, res, body){
+            var respond = {
+                status : true,
+                message : null
+            };
+            if (!error && res.statusCode == 200) {
+                var data = JSON.parse(body).ticker;
+                var result = {
+                    high : data.high,
+                    low  : data.low,
+                    last : data.lastprice,
+                    time : data.updated,
+                    buy  : data.lastbuy,
+                    sell : data.lastsell
+                };
+                respond.message = result;
+            }
+            else {
+                respond.status  = false;
+                respond.message = 'exchange error';
+            }
+            done(respond);
+    });
+}
+
+function getBTCPriceInUSD(done){
+    request.get('https://www.bitstamp.net/api/ticker/',
+        function(error, res, body){
+            var respond = {
+                status : true,
+                message : null
+            };
+            if (!error && res.statusCode == 200) {
+                var data = JSON.parse(body);
+                var result = {
+                    high : data.high,
+                    low  : data.low,
+                    last : data.last,
+                    time : data.timestamp,
+                    buy  : data.bid,
+                    sell : data.ask
+                };
+                respond.message = result;
+            }
+            else {
+                respond.status  = false;
+                respond.message = 'exchange error';
+            }
+            done(respond);
+        });
+}
+
 module.exports = {
     getClientState : getClientState,
     getAccountList : getAccountList,
@@ -947,7 +1023,8 @@ module.exports = {
     getTxFromCache : getTxFromCache,
     addAccountToCache : addAccountToCache,
     removeAccountFromCache : removeAccountFromCache,
-    getAccountFromCache : getAccountFromCache
+    getAccountFromCache : getAccountFromCache,
+    updateRecentPrice : updateRecentPrice
 };
 
 

@@ -36,6 +36,10 @@ var burstStat = {
     genesisTimestamp: 0,
     totalCirculation: 0,
     totalAccount    : 0,
+    totalTransaction: 0,
+    totalTransactionFee:0,
+    totalTransactionAmount:0,
+    totalMiners:0,
     isSyncing       : false,
     blocks          : burstStatBlock,
     accMostRich     : [],
@@ -78,6 +82,7 @@ function processBlockRelatedTx(block){
         var txList = block.transactionsData;
         txList.forEach(function(tx){
             var txAmount = parseFloat(tx.amountNQT/100000000.0).toFixed(2);
+            var txFeeAmount = parseFloat(tx.feeNQT/100000000.0).toFixed(2);
             if(tx.hasOwnProperty('sender')){
                 if(activeAccount .hasOwnProperty(tx.sender)){
                     var spent = parseFloat(activeAccount [tx.sender].spent) + parseFloat(txAmount);
@@ -92,6 +97,9 @@ function processBlockRelatedTx(block){
                     activeAccount [tx.recipient].txCount++;
                 }
             }
+            burstStat.totalTransaction = parseInt(burstStat.totalTransaction) + 1;
+            burstStat.totalTransactionFee = parseFloat(parseFloat(burstStat.totalTransactionFee) + parseFloat(txFeeAmount)).toFixed(2);
+            burstStat.totalTransactionAmount = parseFloat(parseFloat(burstStat.totalTransactionAmount) + parseFloat(txAmount)).toFixed(2);
 
             var newTx = {
                 amount : txAmount,
@@ -166,6 +174,7 @@ function updateTopBalance(done){
         burstStat.totalCirculation = parseFloat(burstStat.totalCirculation) + parseFloat(newItem.balance);
         burstStat.totalAccount = parseInt(burstStat.totalAccount) + 1;
 
+
         if(parseFloat(newItem.balance) < 1.0){
             burstStat.distAccBalance[0] = parseInt(burstStat.distAccBalance[0]) + 1;
         }
@@ -203,6 +212,11 @@ function updateTopMiner(done){
             account: acc.data.account,
             accountRS : acc.data.accountRS
         };
+        var minedBalance = parseFloat(acc.data.forgedBalanceNQT/100000000.0).toFixed(2);
+        if(parseFloat(minedBalance) > 0){
+            burstStat.totalMiners = parseInt(burstStat.totalMiners) + 1;
+        }
+
         for (var insertNdx = 0; insertNdx < burstStat.accTopMiners.length; insertNdx++) {
             var oldMined = parseFloat(burstStat.accTopMiners[insertNdx].mined);
             var newMined = parseFloat(itemMiner.mined);
@@ -283,6 +297,7 @@ function processTopScore(done){
     burstStat.distAccBalance = [];
     burstStat.totalCirculation = 0;
     burstStat.totalAccount = 0;
+    burstStat.totalMiners = 0;
     for(var i=burstStat.distAccBalance.length ; i<10 ; i++){
         burstStat.distAccBalance.push(0);
     }
@@ -427,13 +442,29 @@ function processBlockStat(block, done){
                 var txAmountSum = 0;
                 var fundDistSum = 0;
                 var ndx = 0;
+                var burstHigh = recentItem.burstPrice.high;
+                var burstLow  = recentItem.burstPrice.low;
+                var btcHigh = recentItem.btcPrice.high;
+                var btcLow  = recentItem.btcPrice.low;
                 do{
                     secsDiff = recentItem.timestamp - prevSeries[ndx].timestamp
                     if(secsDiff < thisSeriesInterval){
                         diffsum       += prevSeries[ndx].diff;
                         txSum         += prevSeries[ndx].tx;
-                        txAmountSum   += prevSeries[ndx].txAmount;
+                        txAmountSum   += parseFloat(prevSeries[ndx].txAmount);
                         fundDistSum   += prevSeries[ndx].fundDist;
+                        if(burstHigh < prevSeries[ndx].burstPrice.high){
+                            burstHigh = prevSeries[ndx].burstPrice.high;
+                        }
+                        if(burstLow > prevSeries[ndx].burstPrice.low){
+                            burstLow = prevSeries[ndx].burstPrice.low;
+                        }
+                        if(btcHigh < prevSeries[ndx].btcPrice.high){
+                            btcHigh = prevSeries[ndx].btcPrice.high;
+                        }
+                        if(btcLow > prevSeries[ndx].btcPrice.low){
+                            btcLow = prevSeries[ndx].btcPrice.low;
+                        }
                         ndx++;
                     }
                 }while( (secsDiff < thisSeriesInterval) && (ndx < prevSeries.length) );
@@ -442,29 +473,57 @@ function processBlockStat(block, done){
                 thisSeries[0].height     = recentItem.height;
                 thisSeries[0].diff       = diffsum/parseFloat(ndx);
                 thisSeries[0].tx         = txSum/parseFloat(ndx);
-                thisSeries[0].txAmount   = txAmountSum/parseFloat(ndx);
+                thisSeries[0].txAmount   = parseFloat(txAmountSum/parseFloat(ndx)).toFixed(2);
                 thisSeries[0].fundDist   = fundDistSum/parseFloat(ndx);
                 thisSeries[0].accCount   = recentItem.accCount;
-                thisSeries[0].timeLength = secsDiff;
+                thisSeries[0].minerCount    = recentItem.minerCount,
+                thisSeries[0].totalTxCount  = recentItem.totalTxCount,
+                thisSeries[0].totalTxAmount = recentItem.totalTxAmount,
+                thisSeries[0].totalTxFee    = recentItem.totalTxFee,
+                thisSeries[0].timeLength    = secsDiff;
+                thisSeries[0].burstPrice.last = recentItem.burstPrice.last;
+                thisSeries[0].burstPrice.buy  = recentItem.burstPrice.buy;
+                thisSeries[0].burstPrice.sell = recentItem.burstPrice.sell;
+                thisSeries[0].burstPrice.time = recentItem.burstPrice.time;
+                thisSeries[0].burstPrice.high = burstHigh;
+                thisSeries[0].burstPrice.low  = burstLow;
+                thisSeries[0].btcPrice.last = recentItem.btcPrice.last;
+                thisSeries[0].btcPrice.buy  = recentItem.btcPrice.buy;
+                thisSeries[0].btcPrice.sell = recentItem.btcPrice.sell;
+                thisSeries[0].btcPrice.time = recentItem.btcPrice.time;
+                thisSeries[0].btcPrice.high = btcHigh;
+                thisSeries[0].btcPrice.low  = btcLow;
             }
         }
     }
 
+    var burstPrice = JSON.parse(JSON.stringify(burst.getClientState().priceInBtc));
+    var btcPrice   = JSON.parse(JSON.stringify(burst.getClientState().btcPricInUSD));
     var blockDiff = parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget);
     var txCount   = parseFloat(block.numberOfTransactions);
-    var txAmount  = parseFloat(block.totalAmountNQT);
+    var txAmount  = parseFloat(block.totalAmountNQT/100000000.0).toFixed(2);
+    var totalTxCount  = parseFloat(burstStat.totalTransaction);
+    var totalTxAmount  = parseFloat(burstStat.totalTransactionAmount).toFixed(2);
+    var totalTxFee  = parseFloat(burstStat.totalTransactionFee).toFixed(2);
     var dist      = parseFloat(burstStat.totalCirculation) / parseFloat(burstStat.totalAccount);
     var accCount  = parseFloat(burstStat.totalAccount);
+    var minerCount  = parseFloat(burstStat.totalMiners);
     var blockStatItem = {
         diff        : blockDiff,
         tx          : txCount,
         txAmount    : txAmount,
         fundDist    : dist,
         accCount    : accCount,
+        minerCount  : minerCount,
+        totalTxCount : totalTxCount,
+        totalTxAmount : totalTxAmount,
+        totalTxFee : totalTxFee,
         blockId     : block.blockId,
         blockHeight : block.height,
         timestamp   : block.timestamp,
-        timeLength  : 0
+        timeLength  : 0,
+        burstPrice  : burstPrice,
+        btcPrice    : btcPrice
     };
     burstStat.blocks.blocks.unshift(blockStatItem);
 
