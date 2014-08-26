@@ -193,8 +193,8 @@ function renderStatHtml(data,done) {
         };
 
         for(var i=data.blocks.hourly.length-1 ; i>=0 ; i--){
-            var timestamp = parseInt(data.blocks.hourly[i].timestamp) + parseInt(data.genesisTimestamp);
-            var timestampStr = moment.utc().seconds(timestamp).format('dddd, MMM Do, hh:mm:ss');
+            var timestamp = parseInt(data.blocks.hourly[i].timestamp)*1000 + parseInt(data.blocks.hourly[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
+            var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             blockDiffChartData.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.hourly[i].diff).toFixed(2);
             blockDiffChartData.datasets[0].data.push(diffStr);
@@ -223,8 +223,8 @@ function renderStatHtml(data,done) {
         };
 
         for(var i=data.blocks.hourly.length-1 ; i>=0 ; i--){
-            var timestamp = parseInt(data.blocks.hourly[i].timestamp) + parseInt(data.genesisTimestamp);
-            var timestampStr = moment.utc().seconds(timestamp).format('dddd, MMM Do, hh:mm:ss');
+            var timestamp = parseInt(data.blocks.hourly[i].timestamp)*1000 + parseInt(data.blocks.hourly[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
+            var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             txChartData.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.hourly[i].txAmount/(1000*data.blocks.hourly[i].accCount)).toFixed(2);
             txChartData.datasets[0].data.push(amountStr);
@@ -253,8 +253,8 @@ function renderStatHtml(data,done) {
         };
 
         for(var i=data.blocks.hourly.length-1 ; i>=0 ; i--){
-            var timestamp = parseInt(data.blocks.hourly[i].timestamp) + parseInt(data.genesisTimestamp);
-            var timestampStr = moment.utc().seconds(timestamp).format('dddd, MMM Do, hh:mm:ss');
+            var timestamp = parseInt(data.blocks.hourly[i].timestamp)*1000 + parseInt(data.blocks.hourly[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
+            var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartData.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.hourly[i].fundDist).toFixed(2);
             fundChartData.datasets[0].data.push(amountStr);
