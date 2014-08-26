@@ -557,3 +557,121 @@ hr {
     width:33%;
     min-width: 24em;
 }
+
+.BlockStatSelector{
+    color:#80a2c5;
+    margin:0.5em;
+    margin-bottom: 0;
+}
+
+.BlockStatCatSelectorActive{
+    background-color: #19222e;
+}
+
+.StatCatSelector{
+    display: inline-block;
+    cursor: pointer;
+    padding:0.5em;
+    margin-left: 0.5em;
+}
+
+.BlockStatList{
+    color:#80a2c5;
+    background-color: #19222e;
+    padding:0.25em;
+    margin:0.5em;
+    margin-top: 0;
+}
+
+.StatListItem{
+    display: table;
+    margin:2px;
+}
+
+.BlockStatListItemHead{
+    display: table-cell;
+    vertical-align: middle;
+    min-width:4em;
+    text-align: right;
+    padding-right: 0.25em;
+    background-color: #5b7997;
+    color : #19222e;
+}
+
+.StatListItemContent{
+    display: table-cell;
+    font-size:1.25em;
+    padding:0.25em;
+    min-width: 16em;
+    width: 100%;
+}
+
+.TxStatSelector{
+    color:#8D5A5A;
+    margin:0.5em;
+    margin-bottom: 0;
+}
+
+.TxStatCatSelectorActive{
+    background-color: #291B1B;
+}
+
+.TxStatList{
+    color:#8D5A5A;
+    background-color: #291B1B;
+    padding:0.5em;
+    margin:0.5em;
+    margin-top: 0;
+}
+
+.TxStatListItemHead{
+    display: table-cell;
+    vertical-align: middle;
+    min-width:10em;
+    text-align: right;
+    padding:0.25em;
+    background-color: #8D5A5A;
+    color : #291B1B;
+}
+
+.AccStatSelector{
+    color:#52b173;
+    margin:0.5em;
+    margin-bottom: 0;
+}
+
+.AccStatCatSelectorActive{
+    background-color: #1A2522;
+}
+
+.AccStatList{
+    color:#52b173;
+    background-color: #1A2522;
+    padding:0.5em;
+    margin:0.5em;
+    margin-top: 0;
+}
+
+.AccStatListItemHead{
+    display: table-cell;
+    vertical-align: middle;
+    min-width:14em;
+    text-align: right;
+    padding:0.25em;
+    background-color: #52b173;
+    color : #1A2522;
+}
+
+.chartContainer{
+    position: relative;
+    width: 100%;
+    height:12em;
+}
+
+.chartCanvas{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}

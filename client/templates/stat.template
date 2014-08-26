@@ -1,0 +1,120 @@
+<div class="divTable">
+    <div class="RecentList" id="IndexBlockList">
+        <div class="chartContainer">
+            <div class="RecentListTitle RecentListTitleBlock">Block Generation Time Distribution</div>
+            <canvas class="chartCanvas" id="blockGenChart"></canvas>
+        </div>
+        <div class="RecentListTitle RecentListTitleBlock">Block Stats Top 100</div>
+        <div class="BlockStatSelector">
+            <div id="BlockStatCatSelector-Diff" class="StatCatSelector BlockStatCatSelector BlockStatCatSelectorActive">By Diff</div>
+            <div id="BlockStatCatSelector-Time" class="StatCatSelector BlockStatCatSelector">By Mining Duration</div>
+        </div>
+        <div class="BlockStatList" id="BlockStatList-Diff">
+            {{#blkHighestDiff}}
+                <div class="StatListItem">
+                    <div class="BlockStatListItemHead">
+                        <a href="/blk/{{blockId}}">#{{height}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                        {{diffStr}}
+                    </div>
+                </div>
+            {{/blkHighestDiff}}
+        </div>
+        <div class="BlockStatList Hidden" id="BlockStatList-Time">
+            {{#blkSlowest}}
+                <div class="StatListItem">
+                    <div class="BlockStatListItemHead">
+                        <a href="/blk/{{blockId}}">#{{height}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                         {{roundTimeStr}}
+                    </div>
+                </div>
+            {{/blkSlowest}}
+        </div>
+    </div>
+    <div class="RecentList RecentListTitleTx" id="IndexTransactionList">
+        <div class="chartContainer">
+            <div class="RecentListTitle">Transaction Amount Distribution</div>
+            <canvas class="chartCanvas" id="txAmountChart"></canvas>
+        </div>
+        <div class="RecentListTitle">Transactions Stats Top 100</div>
+        <div class="TxStatSelector">
+            <div id="TxStatCatSelector-Diff" class="StatCatSelector TxStatCatSelector TxStatCatSelectorActive">By Amount</div>
+        </div>
+        <div class="TxStatList" id="TxStatList-Amount">
+            {{#txTopAmount}}
+                <div class="StatListItem">
+                    <div class="TxStatListItemHead">
+                        <a href="/tx/{{transaction}}">{{transaction}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                        {{amountStr}}
+                    </div>
+                </div>
+            {{/txTopAmount}}
+        </div>
+    </div>
+    <div class="RecentList" id="IndexAccountList">
+        <div class="chartContainer">
+            <div class="RecentListTitle RecentListTitleAccount">Account Balance Distribution</div>
+            <canvas class="chartCanvas" id="accDistChart"></canvas>
+        </div>
+        <div class="RecentListTitle RecentListTitleAccount">Accounts Stats Top 100</div>
+        <div class="AccStatSelector">
+            <div id="AccStatCatSelector-Balance" class="StatCatSelector AccStatCatSelector AccStatCatSelectorActive">By Balance</div>
+            <div id="AccStatCatSelector-Mined" class="StatCatSelector AccStatCatSelector">By Mined</div>
+            <div id="AccStatCatSelector-TxAmount" class="StatCatSelector AccStatCatSelector">By TX Amount</div>
+            <div id="AccStatCatSelector-TxCount" class="StatCatSelector AccStatCatSelector">By TX Count</div>
+        </div>
+        <div class="AccStatList" id="AccStatList-Balance">
+            {{#accMostRich}}
+                <div class="StatListItem">
+                    <div class="AccStatListItemHead">
+                        <a href="/acc/{{accountRS}}">{{accountRS}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                        {{balanceStr}}
+                    </div>
+                </div>
+            {{/accMostRich}}
+        </div>
+        <div class="AccStatList Hidden" id="AccStatList-Mined">
+            {{#accTopMiners}}
+                <div class="StatListItem">
+                    <div class="AccStatListItemHead">
+                        <a href="/acc/{{accountRS}}">{{accountRS}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                        {{minedStr}}
+                    </div>
+                </div>
+            {{/accTopMiners}}
+        </div>
+        <div class="AccStatList Hidden" id="AccStatList-TxAmount">
+            {{#accTopTxAmount}}
+                <div class="StatListItem">
+                    <div class="AccStatListItemHead">
+                        <a href="/acc/{{accountRS}}">{{accountRS}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                        {{txAmountStr}}
+                    </div>
+                </div>
+            {{/accTopTxAmount}}
+        </div>
+        <div class="AccStatList Hidden" id="AccStatList-TxCount">
+            {{#accMostActive}}
+                <div class="StatListItem">
+                    <div class="AccStatListItemHead">
+                        <a href="/acc/{{accountRS}}">{{accountRS}}</a>
+                    </div>
+                    <div class="StatListItemContent">
+                        {{txCountStr}}
+                    </div>
+                </div>
+            {{/accMostActive}}
+        </div>
+    </div>
+</div>

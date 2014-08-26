@@ -21,30 +21,6 @@ var fs          = require('fs');
  15.distribution of transaction amount (<1,1k,10k,100k,1m,10m,100m,1g,>1g)
  */
 
-var burstStatDiff = {
-    blocks : [], //last 180 blocks
-    hourly : [], //last 168 (7 days  ) 1 record ~ 15 blocks
-    daily  : [], //last  90 (3 months)
-    weekly : [], //last  96 (2 years )
-    monthly: []  //last  60 (5 years )
-};
-
-var burstStatTxAmount = { //.totalAmountNQT
-    blocks : [], //last 180 blocks
-    hourly : [], //last 168 (7 days  ) 1 record ~ 15 blocks
-    daily  : [], //last  90 (3 months)
-    weekly : [], //last  96 (2 years )
-    monthly: []  //last  60 (5 years )
-};
-
-var burstStatTxCount = { //.numberOfTransactions
-    blocks : [], //last 180 blocks
-    hourly : [], //last 168 (7 days  ) 1 record ~ 15 blocks
-    daily  : [], //last  90 (3 months)
-    weekly : [], //last  96 (2 years )
-    monthly: []  //last  60 (5 years )
-};
-
 var burstStatBlock = { //.numberOfTransactions
     blocks : [], //last 180 blocks
     hourly : [], //last 168 (7 days  ) 1 record ~ 15 blocks
@@ -60,9 +36,6 @@ var burstStat = {
     totalCirculation: 0,
     totalAccount    : 0,
     isSyncing       : false,
-    diff            : burstStatDiff,
-    txAmount        : burstStatTxAmount,
-    txCount         : burstStatTxCount,
     blocks          : burstStatBlock,
     accMostRich     : [],
     accTopMiners    : [],
@@ -393,7 +366,7 @@ function processRoundTimeStat(block, done){
 }
 
 function processBlockDiffStat(block, done){
-    var blockDiff = parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget);
+    var blockDiff = parseFloat(parseFloat(burstStat.genesisDiff) / parseFloat(block.baseTarget)).toFixed(2);
     var item = {
         blockId: block.blockId,
         diff: blockDiff,
@@ -539,6 +512,10 @@ function getStat(){
     return burstStat;
 }
 
+function getStatJsonStr(){
+    return JSON.stringify(burstStat);
+}
+
 function getActiveAccount(){
     return activeAccount;
 }
@@ -625,6 +602,7 @@ function sync(done){
 
 module.exports = {
     getStat: getStat,
+    getStatJsonStr: getStatJsonStr,
     getActiveAccount : getActiveAccount,
     update:update,
     init:init,

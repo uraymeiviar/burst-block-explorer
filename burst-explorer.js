@@ -15,6 +15,7 @@ var index           = require('./server/index');
 var recentInfo      = require('./server/recentInfo');
 var burst           = require('./server/burstapi');
 var burstStat       = require('./server/burststat');
+var stat            = require('./server/stat');
 BurstConfig         = require('./burst-config');
 
 var app = express();
@@ -29,8 +30,10 @@ app.use('/api/acc', account);
 app.use('/api/tx', transaction);
 app.use('/api/blk', block);
 app.use('/api/recent',recentInfo);
+app.use('/api/stat',stat);
 app.use(express.static(path.join(__dirname, 'client')));
 app.use('/',index);
+app.use('/stat',index);
 app.use('/acc/*',index);
 app.use('/tx/*',index);
 app.use('/blk/*',index);
