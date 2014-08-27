@@ -442,10 +442,10 @@ function processBlockStat(block, done){
                 var txAmountSum = 0;
                 var fundDistSum = 0;
                 var ndx = 0;
-                var burstHigh = recentItem.burstPrice.high;
-                var burstLow  = recentItem.burstPrice.low;
-                var btcHigh = recentItem.btcPrice.high;
-                var btcLow  = recentItem.btcPrice.low;
+                var burstHigh = parseFloat(recentItem.burstPrice.high);
+                var burstLow  = parseFloat(recentItem.burstPrice.low);
+                var btcHigh = parseFloat(recentItem.btcPrice.high);
+                var btcLow  = parseFloat(recentItem.btcPrice.low);
                 do{
                     secsDiff = recentItem.timestamp - prevSeries[ndx].timestamp
                     if(secsDiff < thisSeriesInterval){
@@ -496,6 +496,9 @@ function processBlockStat(block, done){
             }
         }
     }
+
+    burstStat.burstPrice = JSON.parse(JSON.stringify(burst.getClientState().priceInBtc));
+    burstStat.btcPrice   = JSON.parse(JSON.stringify(burst.getClientState().btcPricInUSD));
 
     var burstPrice = JSON.parse(JSON.stringify(burst.getClientState().priceInBtc));
     var btcPrice   = JSON.parse(JSON.stringify(burst.getClientState().btcPricInUSD));

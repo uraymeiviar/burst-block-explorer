@@ -1,12 +1,36 @@
 <div class="divTable">
-    <div class="RecentList" id="IndexBlockList">
+    <div class="RecentList RecentListTitleBlock" id="IndexBlockList">
         <div class="chartContainer">
-            <div class="RecentListTitle RecentListTitleBlock">Block Difficulty</div>
-            <div class="RecentListTitleDesc RecentListTitleBlock">Block Difficulty Hourly</div>
-            <canvas class="chartCanvas" id="blockDiffChart"></canvas>
+            <div class="chartIntervalButtons">
+                <div class="RecentListTitle RecentListTitleBlock">
+                    Block Difficulty
+                    <span id="chartIntervalButton-Blk-Hourly" class="chartIntervalButton chartIntervalButton-Blk chartIntervalButtonActive-Blk">H</span>
+                    <span id="chartIntervalButton-Blk-Daily" class="chartIntervalButton chartIntervalButton-Blk">D</span>
+                    <span id="chartIntervalButton-Blk-Weekly" class="chartIntervalButton chartIntervalButton-Blk">W</span>
+                </div>
+                <div class="RecentListTitleDesc RecentListTitleBlock">Difficulty relative to block-0 target value</div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Blk" id="chartContainerInterval-Blk-Hourly">
+                <div class="RecentListTitleDesc RecentListTitleBlock">Hourly</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="blockDiffChart"></canvas>
+                </div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Blk" id="chartContainerInterval-Blk-Daily">
+                <div class="RecentListTitleDesc RecentListTitleBlock">Daily</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="blockDiffChartDaily"></canvas>
+                </div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Blk" id="chartContainerInterval-Blk-Weekly">
+                <div class="RecentListTitleDesc RecentListTitleBlock">Weekly</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="blockDiffChartWeekly"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="chartContainer">
-            <div class="RecentListTitle RecentListTitleBlock">Block Generation Time Distribution</div>
+        <div class="RecentListTitle RecentListTitleBlock">Block Generation Time Distribution</div>
+        <div class="canvasArea">
             <canvas class="chartCanvas" id="blockGenChart"></canvas>
         </div>
         <div class="RecentListTitle RecentListTitleBlock">Block Stats Top 100</div>
@@ -41,12 +65,36 @@
     </div>
     <div class="RecentList RecentListTitleTx" id="IndexTransactionList">
         <div class="chartContainer">
-            <div class="RecentListTitle">Transaction Amount Average</div>
-            <div class="RecentListTitleDesc">Total Amount of transactions divided by total active account Hourly<br/>(K Burst/Hour)</div>
-            <canvas class="chartCanvas" id="txChart"></canvas>
+            <div class="chartIntervalButtons">
+                <div class="RecentListTitle">
+                    Transaction Amount Average
+                    <span id="chartIntervalButton-Tx-Hourly" class="chartIntervalButton chartIntervalButton-Tx chartIntervalButtonActive-Tx">H</span>
+                    <span id="chartIntervalButton-Tx-Daily" class="chartIntervalButton chartIntervalButton-Tx">D</span>
+                    <span id="chartIntervalButton-Tx-Weekly" class="chartIntervalButton chartIntervalButton-Tx">W</span>
+                </div>
+                <div class="RecentListTitleDesc">Total Amount of transactions divided by total active account</div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Tx" id="chartContainerInterval-Tx-Hourly">
+                <div class="RecentListTitleDesc">Hourly</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="txChart"></canvas>
+                </div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Tx" id="chartContainerInterval-Tx-Daily">
+                <div class="RecentListTitleDesc">Daily</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="txChartDaily"></canvas>
+                </div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Tx" id="chartContainerInterval-Tx-Weekly">
+                <div class="RecentListTitleDesc">Weekly</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="txChartWeekly"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="chartContainer">
-            <div class="RecentListTitle">Transaction Amount Distribution</div>
+        <div class="RecentListTitle">Transaction Amount Distribution</div>
+        <div class="canvasArea">
             <canvas class="chartCanvas" id="txAmountChart"></canvas>
         </div>
         <div class="RecentListTitle">Transactions Stats Top 100</div>
@@ -67,13 +115,38 @@
         </div>
     </div>
     <div class="RecentList" id="IndexAccountList">
+
         <div class="chartContainer">
-            <div class="RecentListTitle RecentListTitleAccount">Funds Average Distribution</div>
-            <div class="RecentListTitleDesc RecentListTitleAccount">Total funds in circulation divided by Total active account Hourly</div>
-            <canvas class="chartCanvas" id="fundChart"></canvas>
+            <div class="chartIntervalButtons">
+                <div class="RecentListTitle RecentListTitleAccount">
+                    Funds Average Distribution
+                    <span id="chartIntervalButton-Acc-Hourly" class="chartIntervalButton chartIntervalButton-Acc chartIntervalButtonActive-Acc">H</span>
+                    <span id="chartIntervalButton-Acc-Daily" class="chartIntervalButton chartIntervalButton-Acc">D</span>
+                    <span id="chartIntervalButton-Acc-Weekly" class="chartIntervalButton chartIntervalButton-Acc">W</span>
+                </div>
+                <div class="RecentListTitleDesc">Total funds in circulation divided by Total active account</div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Acc" id="chartContainerInterval-Acc-Hourly">
+                <div class="RecentListTitleDesc RecentListTitleAccount">Hourly</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="fundChart"></canvas>
+                </div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Acc" id="chartContainerInterval-Acc-Daily">
+                <div class="RecentListTitleDesc RecentListTitleAccount">Daily</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="fundChartDaily"></canvas>
+                </div>
+            </div>
+            <div class="chartContainerInterval chartContainerInterval-Acc" id="chartContainerInterval-Acc-Weekly">
+                <div class="RecentListTitleDesc RecentListTitleAccount">Weekly</div>
+                <div class="canvasArea">
+                    <canvas class="chartCanvas" id="fundChartWeekly"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="chartContainer">
-            <div class="RecentListTitle RecentListTitleAccount">Account Balance Distribution</div>
+        <div class="RecentListTitle RecentListTitleAccount">Account Balance Distribution</div>
+        <div class="canvasArea">
             <canvas class="chartCanvas" id="accDistChart"></canvas>
         </div>
         <div class="RecentListTitle RecentListTitleAccount">Accounts Stats Top 100</div>

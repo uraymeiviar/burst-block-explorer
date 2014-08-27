@@ -773,11 +773,38 @@ function updateRecentPrice(done){
             getClientState().priceInBtc = msg.message;
             console.log(jsonFormat.render(msg.message));
         }
+        else{
+            if(getClientState().priceInBtc == null){
+                var currentTime = new Date().getTime();
+                getClientState().priceInBtc = {
+                    high : '0.0',
+                    low  : '0.0',
+                    last : '0.0',
+                    time : currentTime,
+                    buy  : '0.0',
+                    sell : '0.0'
+                };
+            }
+        }
         getBTCPriceInUSD(function(btcMsg){
             if(btcMsg.status === true){
                 console.log('BTC price :');
                 getClientState().btcPricInUSD = btcMsg.message;
                 console.log(jsonFormat.render(btcMsg.message));
+                done();
+            }
+            else{
+                if(getClientState().btcPricInUSD == null){
+                    var currentTime = new Date().getTime();
+                    getClientState().btcPricInUSD = {
+                        high : '0.0',
+                        low  : '0.0',
+                        last : '0.0',
+                        time : currentTime,
+                        buy  : '0.0',
+                        sell : '0.0'
+                    };
+                }
                 done();
             }
         });
@@ -965,7 +992,15 @@ function getPriceInBTC(done){
             }
             else {
                 respond.status  = false;
-                respond.message = 'exchange error';
+                var currentTime = new Date().getTime();
+                respond.message = {
+                    high : '0.0',
+                    low  : '0.0',
+                    last : '0.0',
+                    time : currentTime,
+                    buy  : '0.0',
+                    sell : '0.0'
+                };
             }
             done(respond);
     });
@@ -989,13 +1024,42 @@ function getBTCPriceInUSD(done){
                     sell : data.ask
                 };
                 respond.message = result;
+                done(respond);
             }
             else {
-                respond.status  = false;
-                respond.message = 'exchange error';
+                request.get('https://btc-e.com/api/2/btc_usd/ticker',
+                    function(error, res, body){
+                        if (!error && res.statusCode == 200) {
+                            var data = JSON.parse(body).ticker;
+                            var result = {
+                                high : data.high,
+                                low  : data.low,
+                                last : data.last,
+                                time : data.updated,
+                                buy  : data.buy,
+                                sell : data.sell
+                            };
+                            respond.message = result;
+                            done(respond);
+                        }
+                        else{
+                            respond.status  = false;
+                            var currentTime = new Date().getTime();
+                            respond.message = {
+                                high : '0.0',
+                                low  : '0.0',
+                                last : '0.0',
+                                time : currentTime,
+                                buy  : '0.0',
+                                sell : '0.0'
+                            };
+                            done(respond);
+                        }
+                    }
+                );
             }
-            done(respond);
-        });
+        }
+    );
 }
 
 module.exports = {

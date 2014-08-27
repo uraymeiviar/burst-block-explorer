@@ -83,9 +83,11 @@ request.post( {
 
                     burst.update(burst);
                     setInterval(function(){burst.update(burst)},1000);
+
+                    var statFile = path.join(__dirname, 'client')+'/stat.json';
+                    burstStat.init(statFile);
+
                     burst.updateRecentPrice(function(){
-                        var statFile = path.join(__dirname, 'client')+'/stat.json';
-                        burstStat.init(statFile);
                         burstStat.sync(function(){
                             burst.getClientState().onNewBlock = function(){
                                 burstStat.sync(function(){});
