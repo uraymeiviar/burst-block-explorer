@@ -15,6 +15,24 @@ function loadStat( done ){
 }
 
 function preprocessStatData(data){
+    var hourlyStart = parseInt(data.blocks.hourly[data.blocks.hourly.length-1].timestamp)*1000 + parseInt(data.genesisTimestamp);
+    data.hourlyStartTimeStr = moment(hourlyStart).format('MMM Do hh:mm:ss');
+
+    var hourlyEnd = parseInt(data.blocks.hourly[0].timestamp)*1000 + parseInt(data.blocks.hourly[0].timeLength)*1000 + parseInt(data.genesisTimestamp);
+    data.hourlyEndTimeStr = moment(hourlyEnd).format('MMM Do hh:mm:ss');
+
+    var dailyStart = parseInt(data.blocks.daily[data.blocks.daily.length-1].timestamp)*1000 + parseInt(data.genesisTimestamp);
+    data.dailyStartTimeStr = moment(dailyStart).format('MMM Do hh:mm:ss');
+
+    var dailyEnd = parseInt(data.blocks.daily[0].timestamp)*1000 + parseInt(data.blocks.daily[0].timeLength)*1000 + parseInt(data.genesisTimestamp);
+    data.dailyEndTimeStr = moment(dailyEnd).format('MMM Do hh:mm:ss');
+
+    var weeklyStart = parseInt(data.blocks.weekly[data.blocks.weekly.length-1].timestamp)*1000 + parseInt(data.genesisTimestamp);
+    data.weeklyStartTimeStr = moment(weeklyStart).format('MMM Do hh:mm:ss');
+
+    var weeklyEnd = parseInt(data.blocks.weekly[0].timestamp)*1000 + parseInt(data.blocks.weekly[0].timeLength)*1000 + parseInt(data.genesisTimestamp);
+    data.weeklyEndTimeStr = moment(weeklyEnd).format('MMM Do hh:mm:ss');
+
     for(var i=0 ; i<data.blkHighestDiff.length ; i++){
         data.blkHighestDiff[i].diffStr = parseFloat(data.blkHighestDiff[i].diff).toFixed(2);
         data.blkHighestDiff[i].rank = i+1;
@@ -28,27 +46,39 @@ function preprocessStatData(data){
         var amountStr = floatToUnitStr(parseFloat(data.txTopAmount[i].amount));
         data.txTopAmount[i].amountStr = amountStr;
         data.txTopAmount[i].rank = i+1;
+        data.txTopAmount[i].usd = parseFloat(parseFloat(data.txTopAmount[i].amount)*parseFloat(data.burstPrice.last)*parseFloat(data.btcPrice.last)).toFixed(1);
+        data.txTopAmount[i].btc = parseFloat(parseFloat(data.txTopAmount[i].amount)*parseFloat(data.burstPrice.last)).toFixed(8);
     }
     for(var i=0 ; i<data.accMostRich.length ; i++){
         var balanceStr = floatToUnitStr(parseFloat(data.accMostRich[i].balance));
         data.accMostRich[i].balanceStr = balanceStr;
         data.accMostRich[i].rank = i+1;
+        data.accMostRich[i].usd = parseFloat(parseFloat(data.accMostRich[i].balance)*parseFloat(data.burstPrice.last)*parseFloat(data.btcPrice.last)).toFixed(1);
+        data.accMostRich[i].btc = parseFloat(parseFloat(data.accMostRich[i].balance)*parseFloat(data.burstPrice.last)).toFixed(8);
     }
     for(var i=0 ; i<data.accTopMiners.length ; i++){
         var minedStr = floatToUnitStr(parseFloat(data.accTopMiners[i].mined));
         data.accTopMiners[i].minedStr = minedStr;
         data.accTopMiners[i].rank = i+1;
+        data.accTopMiners[i].usd = parseFloat(parseFloat(data.accTopMiners[i].mined)*parseFloat(data.burstPrice.last)*parseFloat(data.btcPrice.last)).toFixed(1);
+        data.accTopMiners[i].btc = parseFloat(parseFloat(data.accTopMiners[i].mined)*parseFloat(data.burstPrice.last)).toFixed(8);
     }
     for(var i=0 ; i<data.accTopTxAmount.length ; i++){
         var txAmountStr = floatToUnitStr(parseFloat(data.accTopTxAmount[i].txAmount));
         data.accTopTxAmount[i].txAmountStr = txAmountStr;
         data.accTopTxAmount[i].rank = i+1;
+        data.accTopTxAmount[i].usd = parseFloat(parseFloat(data.accTopTxAmount[i].txAmount)*parseFloat(data.burstPrice.last)*parseFloat(data.btcPrice.last)).toFixed(1);
+        data.accTopTxAmount[i].btc = parseFloat(parseFloat(data.accTopTxAmount[i].txAmount)*parseFloat(data.burstPrice.last)).toFixed(8);
     }
     for(var i=0 ; i<data.accMostActive.length ; i++){
         var txCountStr = floatToUnitStr(parseFloat(data.accMostActive[i].txCount));
         data.accMostActive[i].txCountStr = txCountStr;
         data.accMostActive[i].rank = i+1;
     }
+
+    data.totalTxAmountStr = floatToUnitStr(parseFloat(data.totalTransactionAmount));
+    data.totalCirculationStr = floatToUnitStr(parseFloat(data.totalCirculation));
+    data.marketCap = parseFloat(parseFloat(data.totalCirculation)*parseFloat(data.burstPrice.last)*parseFloat(data.btcPrice.last)).toFixed(1);
 }
 
 function renderStatHtml(data,done) {
@@ -192,9 +222,21 @@ function renderStatHtml(data,done) {
                 {
                     label: "Block Difficulty",
                     fillColor: "#5b7997",
-                    strokeColor: "#80a2c5",
+                    strokeColor: "#5b7997",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
+                    pointColor: "#5b7997",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Miner Count",
+                    fillColor: "#3c5169",
+                    strokeColor: "#3c5169",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#3c5169",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -206,6 +248,8 @@ function renderStatHtml(data,done) {
             blockDiffChartData.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.hourly[i].diff).toFixed(2);
             blockDiffChartData.datasets[0].data.push(diffStr);
+            var minerCnt = parseInt(data.blocks.hourly[i].minerCount);
+            blockDiffChartData.datasets[1].data.push(minerCnt);
         }
 
         var blockDiffCanvasElement = $("#blockDiffChart");
@@ -240,11 +284,21 @@ function renderStatHtml(data,done) {
                 {
                     label: "Block Difficulty",
                     fillColor: "#5b7997",
-                    strokeColor: "#80a2c5",
-                    pointColor: "rgba(0,0,0,1)",
+                    strokeColor: "#5b7997",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
-                    pointHighlightFill: "#000",
+                    pointColor: "#5b7997",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Miner Count",
+                    fillColor: "#3c5169",
+                    strokeColor: "#3c5169",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#3c5169",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -256,6 +310,8 @@ function renderStatHtml(data,done) {
             blockDiffChartDataDaily.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.daily[i].diff).toFixed(2);
             blockDiffChartDataDaily.datasets[0].data.push(diffStr);
+            var minerCnt = parseInt(data.blocks.daily[i].minerCount);
+            blockDiffChartDataDaily.datasets[1].data.push(minerCnt);
         }
 
         var blockDiffCanvasElementDaily = $("#blockDiffChartDaily");
@@ -269,11 +325,21 @@ function renderStatHtml(data,done) {
                 {
                     label: "Block Difficulty",
                     fillColor: "#5b7997",
-                    strokeColor: "#80a2c5",
+                    strokeColor: "#5b7997",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
-                    pointColor: "rgba(0,0,0,1)",
-                    pointHighlightFill: "#000",
+                    pointColor: "#5b7997",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Miner Count",
+                    fillColor: "#3c5169",
+                    strokeColor: "#3c5169",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#3c5169",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -285,6 +351,8 @@ function renderStatHtml(data,done) {
             blockDiffChartDataWeekly.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.weekly[i].diff).toFixed(2);
             blockDiffChartDataWeekly.datasets[0].data.push(diffStr);
+            var minerCnt = parseInt(data.blocks.weekly[i].minerCount);
+            blockDiffChartDataWeekly.datasets[1].data.push(minerCnt);
         }
 
         var blockDiffCanvasElementWeekly = $("#blockDiffChartWeekly");
@@ -302,6 +370,18 @@ function renderStatHtml(data,done) {
                     strokeColor: "#8D5A5A",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
+                    pointColor: "#8D5A5A",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Transaction Count",
+                    fillColor: "#F59B9B",
+                    strokeColor: "#F59B9B",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#F59B9B",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -311,8 +391,10 @@ function renderStatHtml(data,done) {
             var timestamp = parseInt(data.blocks.hourly[i].timestamp)*1000 + parseInt(data.blocks.hourly[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             txChartData.labels.push(timestampStr);
-            var amountStr = parseFloat(data.blocks.hourly[i].txAmount/1000*data.blocks.hourly[i].accCount).toFixed(2);
+            var amountStr = parseFloat(data.blocks.hourly[i].txAmount/data.blocks.hourly[i].accCount).toFixed(2);
+            var amountStr2 = parseFloat(data.blocks.hourly[i].tx).toFixed(2);
             txChartData.datasets[0].data.push(amountStr);
+            txChartData.datasets[1].data.push(amountStr2);
         }
 
         var txChartCanvasElement = $("#txChart");
@@ -329,8 +411,18 @@ function renderStatHtml(data,done) {
                     strokeColor: "#8D5A5A",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
-                    pointColor: "rgba(0,0,0,1)",
-                    pointHighlightFill: "#000",
+                    pointColor: "#8D5A5A",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Transaction Count",
+                    fillColor: "#F59B9B",
+                    strokeColor: "#F59B9B",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#F59B9B",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -341,7 +433,9 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             txChartDataDaily.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.daily[i].txAmount/data.blocks.daily[i].accCount).toFixed(2);
+            var amountStr2 = parseFloat(data.blocks.daily[i].tx).toFixed(2);
             txChartDataDaily.datasets[0].data.push(amountStr);
+            txChartDataDaily.datasets[1].data.push(amountStr2);
         }
 
         var txChartCanvasElementDaily = $("#txChartDaily");
@@ -359,8 +453,18 @@ function renderStatHtml(data,done) {
                     strokeColor: "#8D5A5A",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
-                    pointColor: "rgba(0,0,0,1)",
-                    pointHighlightFill: "#000",
+                    pointColor: "#8D5A5A",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Transaction Count",
+                    fillColor: "#F59B9B",
+                    strokeColor: "#F59B9B",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#F59B9B",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -371,7 +475,9 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             txChartDataWeekly.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.weekly[i].txAmount/data.blocks.weekly[i].accCount).toFixed(2);
+            var amountStr2 = parseFloat(data.blocks.weekly[i].tx).toFixed(2);
             txChartDataWeekly.datasets[0].data.push(amountStr);
+            txChartDataWeekly.datasets[1].data.push(amountStr2);
         }
 
         var txChartCanvasElementWeekly = $("#txChartWeekly");
@@ -383,11 +489,23 @@ function renderStatHtml(data,done) {
             labels: [],
             datasets: [
                 {
-                    label: "Transaction Amount",
-                    fillColor: "#52b173",
-                    strokeColor: "#52b173",
+                    label: "Fund Distribution",
+                    fillColor: "#30DA7B",
+                    strokeColor: "#30DA7B",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
+                    pointColor: "#30DA7B",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Active Account",
+                    fillColor: "#1A5522",
+                    strokeColor: "#1A5522",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#1A5522",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -397,8 +515,10 @@ function renderStatHtml(data,done) {
             var timestamp = parseInt(data.blocks.hourly[i].timestamp)*1000 + parseInt(data.blocks.hourly[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartData.labels.push(timestampStr);
-            var amountStr = parseFloat(data.blocks.hourly[i].fundDist).toFixed(2);
+            var amountStr = parseFloat(data.blocks.hourly[i].fundDist/1000).toFixed(2);
             fundChartData.datasets[0].data.push(amountStr);
+            var accCount = parseInt(data.blocks.hourly[i].accCount);
+            fundChartData.datasets[1].data.push(accCount);
         }
 
         var fundChartCanvasElement = $("#fundChart");
@@ -410,13 +530,23 @@ function renderStatHtml(data,done) {
             labels: [],
             datasets: [
                 {
-                    label: "Transaction Amount",
-                    fillColor: "#52b173",
-                    strokeColor: "#52b173",
+                    label: "Fund Distribution",
+                    fillColor: "#30DA7B",
+                    strokeColor: "#30DA7B",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
-                    pointColor: "rgba(0,0,0,1)",
-                    pointHighlightFill: "#000",
+                    pointColor: "#30DA7B",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Active Account",
+                    fillColor: "#1A5522",
+                    strokeColor: "#1A5522",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#1A5522",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -426,8 +556,10 @@ function renderStatHtml(data,done) {
             var timestamp = parseInt(data.blocks.daily[i].timestamp)*1000 + parseInt(data.blocks.daily[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartDataDaily.labels.push(timestampStr);
-            var amountStr = parseFloat(data.blocks.daily[i].fundDist).toFixed(2);
+            var amountStr = parseFloat(data.blocks.daily[i].fundDist/1000).toFixed(2);
             fundChartDataDaily.datasets[0].data.push(amountStr);
+            var accCount = parseInt(data.blocks.daily[i].accCount);
+            fundChartDataDaily.datasets[1].data.push(accCount);
         }
 
         var fundChartCanvasElementDaily = $("#fundChartDaily");
@@ -439,13 +571,23 @@ function renderStatHtml(data,done) {
             labels: [],
             datasets: [
                 {
-                    label: "Transaction Amount",
-                    fillColor: "#52b173",
-                    strokeColor: "#52b173",
+                    label: "Fund Distribution",
+                    fillColor: "#30DA7B",
+                    strokeColor: "#30DA7B",
                     highlightFill: "#19222e",
                     highlightStroke: "#19222e",
-                    pointColor: "rgba(0,0,0,1)",
-                    pointHighlightFill: "#000",
+                    pointColor: "#30DA7B",
+                    pointHighlightFill: "#19222e",
+                    data: []
+                },
+                {
+                    label: "Active Account",
+                    fillColor: "#1A5522",
+                    strokeColor: "#1A5522",
+                    highlightFill: "#19222e",
+                    highlightStroke: "#19222e",
+                    pointColor: "#1A5522",
+                    pointHighlightFill: "#19222e",
                     data: []
                 }
             ]
@@ -455,8 +597,10 @@ function renderStatHtml(data,done) {
             var timestamp = parseInt(data.blocks.weekly[i].timestamp)*1000 + parseInt(data.blocks.weekly[i].timeLength)*1000 + parseInt(data.genesisTimestamp);
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartDataWeekly.labels.push(timestampStr);
-            var amountStr = parseFloat(data.blocks.weekly[i].fundDist).toFixed(2);
+            var amountStr = parseFloat(data.blocks.weekly[i].fundDist/1000).toFixed(2);
             fundChartDataWeekly.datasets[0].data.push(amountStr);
+            var accCount = parseInt(data.blocks.weekly[i].accCount);
+            fundChartDataWeekly.datasets[1].data.push(accCount);
         }
 
         var fundChartCanvasElementWeekly = $("#fundChartWeekly");

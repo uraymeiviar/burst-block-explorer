@@ -39,7 +39,6 @@ hr {
     padding-bottom:0;
     font-size: 1.2em;
     text-align: right;
-    z-index: 9;
 }
 
 .RecentListTitleDesc{
@@ -47,7 +46,7 @@ hr {
     text-align: right;
     padding: 0.2em;
     padding-right:0.5em;
-    z-index: 9;
+    vertical-align: middle;
 }
 
 
@@ -203,12 +202,24 @@ hr {
     color:#80a2c5;
 }
 
+.RecentListTitleBlock2{
+    color: #3c5169;
+}
+
 .RecentListTitleTx{
     color:#F59B9B;
 }
 
+.RecentListTitleTx2{
+    color:#8D5A5A;
+}
+
 .RecentListTitleAccount{
     color:#30DA7B;
+}
+
+.RecentListTitleAcc2{
+    color:#1A5522;
 }
 
 #content

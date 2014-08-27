@@ -8,22 +8,25 @@
                     <span id="chartIntervalButton-Blk-Daily" class="chartIntervalButton chartIntervalButton-Blk">D</span>
                     <span id="chartIntervalButton-Blk-Weekly" class="chartIntervalButton chartIntervalButton-Blk">W</span>
                 </div>
-                <div class="RecentListTitleDesc RecentListTitleBlock">Difficulty relative to block-0 target value</div>
+                <div class="RecentListTitleDesc RecentListTitleBlock">
+                    Difficulty relative to block-0 target value / <span class="RecentListTitleBlock2">Total (Solo) Miners Account</span>
+                </div>
+
             </div>
             <div class="chartContainerInterval chartContainerInterval-Blk" id="chartContainerInterval-Blk-Hourly">
-                <div class="RecentListTitleDesc RecentListTitleBlock">Hourly</div>
+                <div class="RecentListTitleDesc RecentListTitleBlock">[ {{hourlyStartTimeStr}} - {{hourlyEndTimeStr}} ] Hourly</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="blockDiffChart"></canvas>
                 </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Blk" id="chartContainerInterval-Blk-Daily">
-                <div class="RecentListTitleDesc RecentListTitleBlock">Daily</div>
+                <div class="RecentListTitleDesc RecentListTitleBlock">[ {{dailyStartTimeStr}} - {{dailyEndTimeStr}} ] Daily</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="blockDiffChartDaily"></canvas>
                 </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Blk" id="chartContainerInterval-Blk-Weekly">
-                <div class="RecentListTitleDesc RecentListTitleBlock">Weekly</div>
+                <div class="RecentListTitleDesc RecentListTitleBlock">[ {{weeklyStartTimeStr}} - {{weeklyEndTimeStr}} ] Weekly</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="blockDiffChartWeekly"></canvas>
                 </div>
@@ -33,6 +36,7 @@
         <div class="canvasArea">
             <canvas class="chartCanvas" id="blockGenChart"></canvas>
         </div>
+        &nbsp;Total Blocks {{lastBlock}} mined by {{totalMiners}} miners
         <div class="RecentListTitle RecentListTitleBlock">Block Stats Top 100</div>
         <div class="BlockStatSelector">
             <div id="BlockStatCatSelector-Diff" class="StatCatSelector BlockStatCatSelector BlockStatCatSelectorActive">By Diff</div>
@@ -78,22 +82,25 @@
                     <span id="chartIntervalButton-Tx-Daily" class="chartIntervalButton chartIntervalButton-Tx">D</span>
                     <span id="chartIntervalButton-Tx-Weekly" class="chartIntervalButton chartIntervalButton-Tx">W</span>
                 </div>
-                <div class="RecentListTitleDesc">Total Amount of transactions divided by total active account</div>
+                <div class="RecentListTitleDesc">
+                    Total Amount of transactions divided by total active account
+                    / <span class="RecentListTitleTx2">Average Transaction count</span>
+                </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Tx" id="chartContainerInterval-Tx-Hourly">
-                <div class="RecentListTitleDesc">Hourly</div>
+                <div class="RecentListTitleDesc">[ {{hourlyStartTimeStr}} - {{hourlyEndTimeStr}} ] Hourly</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="txChart"></canvas>
                 </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Tx" id="chartContainerInterval-Tx-Daily">
-                <div class="RecentListTitleDesc">Daily</div>
+                <div class="RecentListTitleDesc">[ {{dailyStartTimeStr}} - {{dailyEndTimeStr}} ] Daily</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="txChartDaily"></canvas>
                 </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Tx" id="chartContainerInterval-Tx-Weekly">
-                <div class="RecentListTitleDesc">Weekly</div>
+                <div class="RecentListTitleDesc">[ {{weeklyStartTimeStr}} - {{weeklyEndTimeStr}} ] Weekly</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="txChartWeekly"></canvas>
                 </div>
@@ -103,6 +110,7 @@
         <div class="canvasArea">
             <canvas class="chartCanvas" id="txAmountChart"></canvas>
         </div>
+        &nbsp;Total Amount transacted {{totalTxAmountStr}} BURST in {{totalTransaction}} transactions
         <div class="RecentListTitle">Transactions Stats Top 100</div>
         <div class="TxStatSelector">
             <div id="TxStatCatSelector-Diff" class="StatCatSelector TxStatCatSelector TxStatCatSelectorActive">By Amount</div>
@@ -117,7 +125,7 @@
                         <a href="/tx/{{transaction}}">{{transaction}}</a>
                     </div>
                     <div class="StatListItemContent">
-                        {{amountStr}}
+                        {{amountStr}} <span class="RecentListTitleDesc">(${{usd}})</span>
                     </div>
                 </div>
             {{/txTopAmount}}
@@ -133,22 +141,25 @@
                     <span id="chartIntervalButton-Acc-Daily" class="chartIntervalButton chartIntervalButton-Acc">D</span>
                     <span id="chartIntervalButton-Acc-Weekly" class="chartIntervalButton chartIntervalButton-Acc">W</span>
                 </div>
-                <div class="RecentListTitleDesc">Total funds in circulation divided by Total active account</div>
+                <div class="RecentListTitleDesc">
+                    Total funds in circulation divided by Total active account
+                    / <span class="RecentListTitleAcc2">Total active account</span>
+                </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Acc" id="chartContainerInterval-Acc-Hourly">
-                <div class="RecentListTitleDesc RecentListTitleAccount">Hourly</div>
+                <div class="RecentListTitleDesc RecentListTitleAccount">[ {{hourlyStartTimeStr}} - {{hourlyEndTimeStr}} ] Hourly</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="fundChart"></canvas>
                 </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Acc" id="chartContainerInterval-Acc-Daily">
-                <div class="RecentListTitleDesc RecentListTitleAccount">Daily</div>
+                <div class="RecentListTitleDesc RecentListTitleAccount">[ {{dailyStartTimeStr}} - {{dailyEndTimeStr}} ] Daily</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="fundChartDaily"></canvas>
                 </div>
             </div>
             <div class="chartContainerInterval chartContainerInterval-Acc" id="chartContainerInterval-Acc-Weekly">
-                <div class="RecentListTitleDesc RecentListTitleAccount">Weekly</div>
+                <div class="RecentListTitleDesc RecentListTitleAccount">[ {{weeklyStartTimeStr}} - {{weeklyEndTimeStr}} ] Weekly</div>
                 <div class="canvasArea">
                     <canvas class="chartCanvas" id="fundChartWeekly"></canvas>
                 </div>
@@ -158,6 +169,7 @@
         <div class="canvasArea">
             <canvas class="chartCanvas" id="accDistChart"></canvas>
         </div>
+        &nbsp;Total Coins {{totalCirculationStr}} BURST | Marketcap ${{marketCap}}
         <div class="RecentListTitle RecentListTitleAccount">Accounts Stats Top 100</div>
         <div class="AccStatSelector">
             <div id="AccStatCatSelector-Balance" class="StatCatSelector AccStatCatSelector AccStatCatSelectorActive">By Balance</div>
@@ -175,7 +187,7 @@
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>
                     <div class="StatListItemContent">
-                        {{balanceStr}}
+                        {{balanceStr}} <span class="RecentListTitleDesc">(${{usd}})</span>
                     </div>
                 </div>
             {{/accMostRich}}
@@ -190,7 +202,7 @@
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>
                     <div class="StatListItemContent">
-                        {{minedStr}}
+                        {{minedStr}} <span class="RecentListTitleDesc">(${{usd}})</span>
                     </div>
                 </div>
             {{/accTopMiners}}
@@ -205,7 +217,7 @@
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>
                     <div class="StatListItemContent">
-                        {{txAmountStr}}
+                        {{txAmountStr}} <span class="RecentListTitleDesc">(${{usd}})</span>
                     </div>
                 </div>
             {{/accTopTxAmount}}
