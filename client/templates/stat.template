@@ -41,6 +41,9 @@
         <div class="BlockStatList" id="BlockStatList-Diff">
             {{#blkHighestDiff}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="BlockStatListItemHead">
                         <a href="/blk/{{blockId}}">#{{height}}</a>
                     </div>
@@ -53,6 +56,9 @@
         <div class="BlockStatList Hidden" id="BlockStatList-Time">
             {{#blkSlowest}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="BlockStatListItemHead">
                         <a href="/blk/{{blockId}}">#{{height}}</a>
                     </div>
@@ -104,6 +110,9 @@
         <div class="TxStatList" id="TxStatList-Amount">
             {{#txTopAmount}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="TxStatListItemHead">
                         <a href="/tx/{{transaction}}">{{transaction}}</a>
                     </div>
@@ -159,6 +168,9 @@
         <div class="AccStatList" id="AccStatList-Balance">
             {{#accMostRich}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="AccStatListItemHead">
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>
@@ -171,6 +183,9 @@
         <div class="AccStatList Hidden" id="AccStatList-Mined">
             {{#accTopMiners}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="AccStatListItemHead">
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>
@@ -183,6 +198,9 @@
         <div class="AccStatList Hidden" id="AccStatList-TxAmount">
             {{#accTopTxAmount}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="AccStatListItemHead">
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>
@@ -195,6 +213,9 @@
         <div class="AccStatList Hidden" id="AccStatList-TxCount">
             {{#accMostActive}}
                 <div class="StatListItem">
+                    <div class="StatListItemRank">
+                        {{rank}}
+                    </div>
                     <div class="AccStatListItemHead">
                         <a href="/acc/{{accountRS}}">{{accountRS}}</a>
                     </div>

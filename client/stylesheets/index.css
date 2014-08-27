@@ -739,3 +739,8 @@ hr {
     color:#000;
     cursor: default;
 }
+
+.StatListItemRank{
+    min-width: 2em;
+    padding:0.25em;
+}

@@ -824,19 +824,22 @@
             return this;
         },
         resize : function(callback){
-            this.stop();
-            var canvas = this.chart.canvas,
-                newWidth = getMaximumWidth(this.chart.canvas),
-                newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : getMaximumHeight(this.chart.canvas);
+            if($(this.chart.canvas).is(':visible')){
+                this.stop();
+                var canvas = this.chart.canvas,
+                    newWidth = getMaximumWidth(this.chart.canvas),
+                    newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : getMaximumHeight(this.chart.canvas);
 
-            canvas.width = this.chart.width = newWidth;
-            canvas.height =  this.chart.height = newHeight;
+                canvas.width = this.chart.width = newWidth;
+                canvas.height =  this.chart.height = newHeight;
 
-            retinaScale(this.chart);
+                retinaScale(this.chart);
 
-            if (typeof callback === "function"){
-                callback.apply(this, Array.prototype.slice.call(arguments, 1));
+                if (typeof callback === "function"){
+                    callback.apply(this, Array.prototype.slice.call(arguments, 1));
+                }
             }
+
             return this;
         },
         reflow : noop,

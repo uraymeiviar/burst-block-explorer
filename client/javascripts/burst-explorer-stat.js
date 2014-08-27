@@ -1,3 +1,13 @@
+var blockDiffChart;
+var blockDiffChartDaily;
+var blockDiffChartWeekly;
+var txChart;
+var txChartDaily;
+var txChartWeekly;
+var fundChart;
+var fundChartDaily;
+var fundChartWeekly;
+
 function loadStat( done ){
     $.get('/api/stat/', function(res) {
         renderStatHtml(res,done);
@@ -7,30 +17,37 @@ function loadStat( done ){
 function preprocessStatData(data){
     for(var i=0 ; i<data.blkHighestDiff.length ; i++){
         data.blkHighestDiff[i].diffStr = parseFloat(data.blkHighestDiff[i].diff).toFixed(2);
+        data.blkHighestDiff[i].rank = i+1;
     }
     for(var i=0 ; i<data.blkSlowest.length ; i++){
         var duration = moment.duration(parseInt(data.blkSlowest[i].roundTime),"seconds");
         data.blkSlowest[i].roundTimeStr = duration.humanize()+' ( '+parseInt(data.blkSlowest[i].roundTime)+' secs )';
+        data.blkSlowest[i].rank = i+1;
     }
     for(var i=0 ; i<data.txTopAmount.length ; i++){
         var amountStr = floatToUnitStr(parseFloat(data.txTopAmount[i].amount));
         data.txTopAmount[i].amountStr = amountStr;
+        data.txTopAmount[i].rank = i+1;
     }
     for(var i=0 ; i<data.accMostRich.length ; i++){
         var balanceStr = floatToUnitStr(parseFloat(data.accMostRich[i].balance));
         data.accMostRich[i].balanceStr = balanceStr;
+        data.accMostRich[i].rank = i+1;
     }
     for(var i=0 ; i<data.accTopMiners.length ; i++){
         var minedStr = floatToUnitStr(parseFloat(data.accTopMiners[i].mined));
         data.accTopMiners[i].minedStr = minedStr;
+        data.accTopMiners[i].rank = i+1;
     }
     for(var i=0 ; i<data.accTopTxAmount.length ; i++){
         var txAmountStr = floatToUnitStr(parseFloat(data.accTopTxAmount[i].txAmount));
         data.accTopTxAmount[i].txAmountStr = txAmountStr;
+        data.accTopTxAmount[i].rank = i+1;
     }
     for(var i=0 ; i<data.accMostActive.length ; i++){
         var txCountStr = floatToUnitStr(parseFloat(data.accMostActive[i].txCount));
         data.accMostActive[i].txCountStr = txCountStr;
+        data.accMostActive[i].rank = i+1;
     }
 }
 
@@ -86,10 +103,7 @@ function renderStatHtml(data,done) {
 
         var canvasElement = $("#blockGenChart");
         var blockGenChartCtx = canvasElement.get(0).getContext("2d");
-        //canvasElement.width(canvasElement.parent().width()+'px');
-        //canvasElement.height(canvasElement.parent().height()+'px');
-        blockGenChartCtx.canvas.width = canvasElement.parent().width();
-        blockGenChartCtx.canvas.height = canvasElement.parent().height();
+        resizeCanvas(canvasElement);
         var blockGenChart = new Chart(blockGenChartCtx).Bar(blockGenChartdata, blockGenChartOpt);
 
         var txAmountChartData = {
@@ -118,10 +132,7 @@ function renderStatHtml(data,done) {
 
         var txCanvasElement = $("#txAmountChart");
         var txAmountChartCtx = txCanvasElement.get(0).getContext("2d");
-        //txCanvasElement.width(txCanvasElement.parent().width()+'px');
-        //txCanvasElement.height(txCanvasElement.parent().height()+'px');
-        txAmountChartCtx.canvas.width = txCanvasElement.parent().width();
-        txAmountChartCtx.canvas.height = txCanvasElement.parent().height();
+        resizeCanvas(txCanvasElement);
         var txAmountChart = new Chart(txAmountChartCtx).Bar(txAmountChartData, blockGenChartOpt);
 
         var accBalanceChartData = {
@@ -151,10 +162,7 @@ function renderStatHtml(data,done) {
 
         var accCanvasElement = $("#accDistChart");
         var accDistCtx = accCanvasElement.get(0).getContext("2d");
-        accCanvasElement.width(accCanvasElement.parent().width()+'px');
-        accCanvasElement.height(accCanvasElement.parent().height()+'px');
-        accDistCtx.canvas.width = accCanvasElement.parent().width();
-        accDistCtx.canvas.height = accCanvasElement.parent().height();
+        resizeCanvas(accCanvasElement);
         var accDistChart = new Chart(accDistCtx).Bar(accBalanceChartData, blockGenChartOpt);
 
         var lineChartOption = {
@@ -202,11 +210,8 @@ function renderStatHtml(data,done) {
 
         var blockDiffCanvasElement = $("#blockDiffChart");
         var blockDiffCtx = blockDiffCanvasElement.get(0).getContext("2d");
-        blockDiffCanvasElement.width(blockDiffCanvasElement.parent().width()+'px');
-        blockDiffCanvasElement.height(blockDiffCanvasElement.parent().height()+'px');
-        blockDiffCtx.canvas.width = blockDiffCanvasElement.parent().width();
-        blockDiffCtx.canvas.height = blockDiffCanvasElement.parent().height();
-        var blockDiffChart = new Chart(blockDiffCtx).Line(blockDiffChartData, lineChartOption);
+        resizeCanvas(blockDiffCanvasElement);
+        blockDiffChart = new Chart(blockDiffCtx).Line(blockDiffChartData, lineChartOption);
 
         var lineChartOptionAlt = {
             showScale: false,
@@ -255,11 +260,8 @@ function renderStatHtml(data,done) {
 
         var blockDiffCanvasElementDaily = $("#blockDiffChartDaily");
         var blockDiffCtxDaily = blockDiffCanvasElementDaily.get(0).getContext("2d");
-        blockDiffCanvasElementDaily.width(blockDiffCanvasElementDaily.parent().width()+'px');
-        blockDiffCanvasElementDaily.height(blockDiffCanvasElementDaily.parent().height()+'px');
-        blockDiffCtxDaily.canvas.width = blockDiffCanvasElementDaily.parent().width();
-        blockDiffCtxDaily.canvas.height = blockDiffCanvasElementDaily.parent().height();
-        var blockDiffChartDaily = new Chart(blockDiffCtxDaily).Line(blockDiffChartDataDaily, lineChartOptionAlt);
+        resizeCanvas(blockDiffCanvasElementDaily);
+        blockDiffChartDaily = new Chart(blockDiffCtxDaily).Line(blockDiffChartDataDaily, lineChartOptionAlt);
 
         var blockDiffChartDataWeekly = {
             labels: [],
@@ -287,11 +289,8 @@ function renderStatHtml(data,done) {
 
         var blockDiffCanvasElementWeekly = $("#blockDiffChartWeekly");
         var blockDiffCtxWeekly = blockDiffCanvasElementWeekly.get(0).getContext("2d");
-        blockDiffCanvasElementWeekly.width(blockDiffCanvasElementWeekly.parent().width()+'px');
-        blockDiffCanvasElementWeekly.height(blockDiffCanvasElementWeekly.parent().height()+'px');
-        blockDiffCtxWeekly.canvas.width = blockDiffCanvasElementWeekly.parent().width();
-        blockDiffCtxWeekly.canvas.height = blockDiffCanvasElementWeekly.parent().height();
-        var blockDiffChartWeekly = new Chart(blockDiffCtxWeekly).Line(blockDiffChartDataWeekly, lineChartOptionAlt);
+        resizeCanvas(blockDiffCanvasElementWeekly);
+        blockDiffChartWeekly = new Chart(blockDiffCtxWeekly).Line(blockDiffChartDataWeekly, lineChartOptionAlt);
 
 
         var txChartData = {
@@ -318,11 +317,8 @@ function renderStatHtml(data,done) {
 
         var txChartCanvasElement = $("#txChart");
         var txChartCtx = txChartCanvasElement.get(0).getContext("2d");
-        txChartCanvasElement.width(txChartCanvasElement.parent().width()+'px');
-        txChartCanvasElement.height(txChartCanvasElement.parent().height()+'px');
-        txChartCtx.canvas.width = txChartCanvasElement.parent().width();
-        txChartCtx.canvas.height = txChartCanvasElement.parent().height();
-        var txChart = new Chart(txChartCtx).Line(txChartData, lineChartOption);
+        resizeCanvas(txChartCanvasElement);
+        txChart = new Chart(txChartCtx).Line(txChartData, lineChartOption);
 
         var txChartDataDaily = {
             labels: [],
@@ -350,11 +346,8 @@ function renderStatHtml(data,done) {
 
         var txChartCanvasElementDaily = $("#txChartDaily");
         var txChartCtxDaily = txChartCanvasElementDaily.get(0).getContext("2d");
-        txChartCanvasElementDaily.width(txChartCanvasElementDaily.parent().width()+'px');
-        txChartCanvasElementDaily.height(txChartCanvasElementDaily.parent().height()+'px');
-        txChartCtxDaily.canvas.width = txChartCanvasElementDaily.parent().width();
-        txChartCtxDaily.canvas.height = txChartCanvasElementDaily.parent().height();
-        var txChartDaily = new Chart(txChartCtxDaily).Line(txChartDataDaily, lineChartOptionAlt);
+        resizeCanvas(txChartCanvasElementDaily);
+        txChartDaily = new Chart(txChartCtxDaily).Line(txChartDataDaily, lineChartOptionAlt);
 
 
         var txChartDataWeekly = {
@@ -383,11 +376,8 @@ function renderStatHtml(data,done) {
 
         var txChartCanvasElementWeekly = $("#txChartWeekly");
         var txChartCtxWeekly = txChartCanvasElementWeekly.get(0).getContext("2d");
-        txChartCanvasElementWeekly.width(txChartCanvasElementWeekly.parent().width()+'px');
-        txChartCanvasElementWeekly.height(txChartCanvasElementWeekly.parent().height()+'px');
-        txChartCtxWeekly.canvas.width = txChartCanvasElementWeekly.parent().width();
-        txChartCtxWeekly.canvas.height = txChartCanvasElementWeekly.parent().height();
-        var txChartWeekly = new Chart(txChartCtxWeekly).Line(txChartDataWeekly, lineChartOptionAlt);
+        resizeCanvas(txChartCanvasElementWeekly);
+        txChartWeekly = new Chart(txChartCtxWeekly).Line(txChartDataWeekly, lineChartOptionAlt);
 
         var fundChartData = {
             labels: [],
@@ -413,11 +403,8 @@ function renderStatHtml(data,done) {
 
         var fundChartCanvasElement = $("#fundChart");
         var fundChartCtx = fundChartCanvasElement.get(0).getContext("2d");
-        fundChartCanvasElement.width(fundChartCanvasElement.parent().width()+'px');
-        fundChartCanvasElement.height(fundChartCanvasElement.parent().height()+'px');
-        fundChartCtx.canvas.width = fundChartCanvasElement.parent().width();
-        fundChartCtx.canvas.height = fundChartCanvasElement.parent().height();
-        var fundChart = new Chart(fundChartCtx).Line(fundChartData, lineChartOption);
+        resizeCanvas(fundChartCanvasElement);
+        fundChart = new Chart(fundChartCtx).Line(fundChartData, lineChartOption);
 
         var fundChartDataDaily = {
             labels: [],
@@ -445,11 +432,8 @@ function renderStatHtml(data,done) {
 
         var fundChartCanvasElementDaily = $("#fundChartDaily");
         var fundChartCtxDaily = fundChartCanvasElementDaily.get(0).getContext("2d");
-        fundChartCanvasElementDaily.width(fundChartCanvasElementDaily.parent().width()+'px');
-        fundChartCanvasElementDaily.height(fundChartCanvasElementDaily.parent().height()+'px');
-        fundChartCtxDaily.canvas.width = fundChartCanvasElementDaily.parent().width();
-        fundChartCtxDaily.canvas.height = fundChartCanvasElementDaily.parent().height();
-        var fundChartDaily = new Chart(fundChartCtxDaily).Line(fundChartDataDaily, lineChartOptionAlt);
+        resizeCanvas(fundChartCanvasElementDaily);
+        fundChartDaily = new Chart(fundChartCtxDaily).Line(fundChartDataDaily, lineChartOptionAlt);
 
         var fundChartDataWeekly = {
             labels: [],
@@ -477,16 +461,21 @@ function renderStatHtml(data,done) {
 
         var fundChartCanvasElementWeekly = $("#fundChartWeekly");
         var fundChartCtxWeekly = fundChartCanvasElementWeekly.get(0).getContext("2d");
-        fundChartCanvasElementWeekly.width(fundChartCanvasElementWeekly.parent().width()+'px');
-        fundChartCanvasElementWeekly.height(fundChartCanvasElementWeekly.parent().height()+'px');
-        fundChartCtxWeekly.canvas.width = fundChartCanvasElementWeekly.parent().width();
-        fundChartCtxWeekly.canvas.height = fundChartCanvasElementWeekly.parent().height();
-        var fundChartWeekly = new Chart(fundChartCtxWeekly).Line(fundChartDataWeekly, lineChartOptionAlt);
+        resizeCanvas(fundChartCanvasElementWeekly);
+        fundChartWeekly = new Chart(fundChartCtxWeekly).Line(fundChartDataWeekly, lineChartOptionAlt);
 
         $('#chartIntervalButton-Blk-Hourly').trigger('click');
         $('#chartIntervalButton-Tx-Hourly').trigger('click');
         $('#chartIntervalButton-Acc-Hourly').trigger('click');
     });
+}
+
+function resizeCanvas(element){
+    var ctx = element.get(0).getContext("2d");
+    element.width(element.parent().width()+'px');
+    element.height(element.parent().height()+'px');
+    ctx.canvas.width = element.parent().width();
+    ctx.canvas.height = element.parent().height();
 }
 
 function initPageStat() {
@@ -524,5 +513,26 @@ function initPageStat() {
 
         $('.chartContainerInterval-'+chartType).hide();
         $('#chartContainerInterval-'+chartType+'-'+chartInterval).show();
+
+
+        blockDiffChart.resize();
+        blockDiffChartDaily.resize();
+        blockDiffChartWeekly.resize();
+        txChart.resize();
+        txChartDaily.resize();
+        txChartWeekly.resize();
+        fundChartDaily.resize();
+        fundChartWeekly.resize();
+        fundChart.resize();
+
+        blockDiffChart.update();
+        blockDiffChartDaily.update();
+        blockDiffChartWeekly.update();
+        txChart.update();
+        txChartDaily.update();
+        txChartWeekly.update();
+        fundChartDaily.update();
+        fundChartWeekly.update();
+        fundChart.update();
     });
 }
