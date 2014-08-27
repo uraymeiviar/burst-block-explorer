@@ -394,10 +394,11 @@ function processBlockDiffStat(block, done){
         var newHighest = parseFloat(item.diff);
         if (newHighest > oldHighest) {
             burstStat.blkHighestDiff.splice(insertNdx, 0, item);
+            insertNdx = 101;
             break;
         }
     }
-    if ((insertNdx == burstStat.blkHighestDiff.length) && (burstStat.blkHighestDiff.length < 100)) {
+    if (burstStat.blkHighestDiff.length < 100) {
         burstStat.blkHighestDiff.push(item);
     }
     if (burstStat.blkHighestDiff.length > 100) {
@@ -409,10 +410,11 @@ function processBlockDiffStat(block, done){
         var newLowest = parseFloat(item.diff);
         if (newLowest < oldLowest) {
             burstStat.blkLowestDiff.splice(insertNdx, 0, item);
+            insertNdx = 101;
             break;
         }
     }
-    if ((insertNdx == burstStat.blkLowestDiff.length) && (burstStat.blkLowestDiff.length < 100)) {
+    if (burstStat.blkLowestDiff.length < 100) {
         burstStat.blkLowestDiff.push(item);
     }
     if (burstStat.blkLowestDiff.length > 100) {
