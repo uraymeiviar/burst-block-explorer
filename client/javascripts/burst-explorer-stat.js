@@ -247,8 +247,14 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             blockDiffChartData.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.hourly[i].diff).toFixed(2);
+            if(isNaN(parseFloat(diffStr)) || diffStr==null){
+                diffStr = 0.0;
+            }
             blockDiffChartData.datasets[0].data.push(diffStr);
             var minerCnt = parseInt(data.blocks.hourly[i].minerCount);
+            if(isNaN(parseInt(minerCnt)) || minerCnt==null){
+                minerCnt = 0;
+            }
             blockDiffChartData.datasets[1].data.push(minerCnt);
         }
 
@@ -309,8 +315,14 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             blockDiffChartDataDaily.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.daily[i].diff).toFixed(2);
+            if(isNaN(parseFloat(diffStr)) || diffStr==null){
+                diffStr = 0.0;
+            }
             blockDiffChartDataDaily.datasets[0].data.push(diffStr);
             var minerCnt = parseInt(data.blocks.daily[i].minerCount);
+            if(isNaN(parseInt(minerCnt)) || minerCnt==null){
+                minerCnt = 0;
+            }
             blockDiffChartDataDaily.datasets[1].data.push(minerCnt);
         }
 
@@ -350,8 +362,14 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             blockDiffChartDataWeekly.labels.push(timestampStr);
             var diffStr = parseFloat(data.blocks.weekly[i].diff).toFixed(2);
+            if(isNaN(parseFloat(diffStr)) || diffStr==null){
+                diffStr = 0.0;
+            }
             blockDiffChartDataWeekly.datasets[0].data.push(diffStr);
             var minerCnt = parseInt(data.blocks.weekly[i].minerCount);
+            if(isNaN(parseInt(minerCnt)) || minerCnt==null){
+                minerCnt = 0;
+            }
             blockDiffChartDataWeekly.datasets[1].data.push(minerCnt);
         }
 
@@ -393,6 +411,12 @@ function renderStatHtml(data,done) {
             txChartData.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.hourly[i].txAmount/data.blocks.hourly[i].accCount).toFixed(2);
             var amountStr2 = parseFloat(data.blocks.hourly[i].tx).toFixed(2);
+            if(isNaN(parseFloat(amountStr)) || amountStr==null){
+                amountStr = 0.0;
+            }
+            if(isNaN(parseFloat(amountStr2)) || amountStr2==null){
+                amountStr2 = 0.0;
+            }
             txChartData.datasets[0].data.push(amountStr);
             txChartData.datasets[1].data.push(amountStr2);
         }
@@ -434,6 +458,12 @@ function renderStatHtml(data,done) {
             txChartDataDaily.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.daily[i].txAmount/data.blocks.daily[i].accCount).toFixed(2);
             var amountStr2 = parseFloat(data.blocks.daily[i].tx).toFixed(2);
+            if(isNaN(parseFloat(amountStr)) || amountStr==null){
+                amountStr = 0.0;
+            }
+            if(isNaN(parseFloat(amountStr2)) || amountStr2==null){
+                amountStr2 = 0.0;
+            }
             txChartDataDaily.datasets[0].data.push(amountStr);
             txChartDataDaily.datasets[1].data.push(amountStr2);
         }
@@ -476,6 +506,12 @@ function renderStatHtml(data,done) {
             txChartDataWeekly.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.weekly[i].txAmount/data.blocks.weekly[i].accCount).toFixed(2);
             var amountStr2 = parseFloat(data.blocks.weekly[i].tx).toFixed(2);
+            if(isNaN(parseFloat(amountStr)) || amountStr==null){
+                amountStr = 0.0;
+            }
+            if(isNaN(parseFloat(amountStr2)) || amountStr2==null){
+                amountStr2 = 0.0;
+            }
             txChartDataWeekly.datasets[0].data.push(amountStr);
             txChartDataWeekly.datasets[1].data.push(amountStr2);
         }
@@ -516,8 +552,14 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartData.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.hourly[i].fundDist/1000).toFixed(2);
+            if(isNaN(parseFloat(amountStr)) || amountStr==null){
+                amountStr = 0.0;
+            }
             fundChartData.datasets[0].data.push(amountStr);
             var accCount = parseInt(data.blocks.hourly[i].accCount);
+            if(isNaN(parseInt(accCount)) || accCount==null){
+                accCount = 0;
+            }
             fundChartData.datasets[1].data.push(accCount);
         }
 
@@ -557,8 +599,14 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartDataDaily.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.daily[i].fundDist/1000).toFixed(2);
+            if(isNaN(parseFloat(amountStr)) || amountStr==null){
+                amountStr = 0.0;
+            }
             fundChartDataDaily.datasets[0].data.push(amountStr);
             var accCount = parseInt(data.blocks.daily[i].accCount);
+            if(isNaN(parseInt(accCount)) || accCount==null){
+                accCount = 0;
+            }
             fundChartDataDaily.datasets[1].data.push(accCount);
         }
 
@@ -598,8 +646,14 @@ function renderStatHtml(data,done) {
             var timestampStr = moment(timestamp).format('dddd, MMM Do, hh:mm:ss');
             fundChartDataWeekly.labels.push(timestampStr);
             var amountStr = parseFloat(data.blocks.weekly[i].fundDist/1000).toFixed(2);
+            if(isNaN(parseFloat(amountStr)) || amountStr==null){
+                amountStr = 0.0;
+            }
             fundChartDataWeekly.datasets[0].data.push(amountStr);
             var accCount = parseInt(data.blocks.weekly[i].accCount);
+            if(isNaN(parseInt(accCount)) || accCount==null){
+                accCount = 0;
+            }
             fundChartDataWeekly.datasets[1].data.push(accCount);
         }
 
