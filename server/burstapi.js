@@ -431,7 +431,11 @@ function getBlocksGeneratedByAccountLoop(accId, queryTimestamp, count, target, d
                 }
                 if(target.length < count){
                     if(queryTimestamp > 0 ){
-                        var nextTimestamp =  queryTimestamp;
+                        var nextTimestamp =  queryTimestamp - 60;
+                        if(nextTimestamp < 0){
+                            nextTimestamp = 0;
+                        }
+                        /*
                         var half = parseInt(queryTimestamp/2);
                         if(half == 0){
                             nextTimestamp = 0;
@@ -442,6 +446,7 @@ function getBlocksGeneratedByAccountLoop(accId, queryTimestamp, count, target, d
                                 nextTimestamp = 0;
                             }
                         }
+                        */
                         getBlocksGeneratedByAccountLoop(accId, nextTimestamp, count, target, done);
                     }
                     else{
@@ -465,7 +470,7 @@ function getBlocksGeneratedByAccount(accId, count, target, done, useCache){
         return;
     }
     var recentBlockTimestamp = blockchainData.lastBlock.timestamp;
-    var queryTimestamp = recentBlockTimestamp - (60*60*24*7);
+    var queryTimestamp = recentBlockTimestamp - 60;//(60*60*24*7);
     if(queryTimestamp < 0 ){
         queryTimestamp = 0;
     }
@@ -509,17 +514,21 @@ function getRecentTxByAccountLoop(accId, queryTimestamp, count, target, done){
                 }
                 if(target.length < count){
                     if(queryTimestamp > 0 ){
-                        var nextTimestamp =  queryTimestamp;
+                        var nextTimestamp =  queryTimestamp - 60;
+                        if(nextTimestamp < 0){
+                            nextTimestamp = 0;
+                        }
+                        /*
                         var half = parseInt(queryTimestamp/2);
                         if(half == 0){
                             nextTimestamp = 0;
                         }
                         else {
                             nextTimestamp = queryTimestamp - half;
-                            if(nextTimestamp < 60*60*24){
+                            if(nextTimestamp < 60*60){
                                 nextTimestamp = 0;
                             }
-                        }
+                        }*/
                         getRecentTxByAccountLoop(accId, nextTimestamp, count, target, done);
                     }
                     else{
@@ -543,7 +552,7 @@ function getRecentTxByAccount(accId, count, target, done, useCache){
         return;
     }
     var recentBlockTimestamp = blockchainData.lastBlock.timestamp;
-    var queryTimestamp = recentBlockTimestamp - (60*60*24*7);
+    var queryTimestamp = recentBlockTimestamp - 60;
     if(queryTimestamp < 0 ){
         queryTimestamp = 0;
     }

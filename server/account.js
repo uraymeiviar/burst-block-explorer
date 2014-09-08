@@ -8,7 +8,7 @@ router.get('/:accid', function(clientReq, clientRes) {
     try{
         burst.getFullAccount(clientReq.params['accid'], function(response){
             clientRes.send(JSON.stringify(response));
-        });
+        }, false);
     }
     catch(ex){
         console.log(jsonFormat.render(ex));
