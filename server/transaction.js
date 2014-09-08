@@ -7,7 +7,7 @@ router.get('/:txid', function(clientReq, clientRes) {
     try{
         burst.getFullTransaction(clientReq.params['txid'], function(respond){
             clientRes.send(JSON.stringify(respond));
-        }, false);
+        });
     }
     catch(ex){
         console.log(jsonFormat.render(ex));

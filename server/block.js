@@ -9,7 +9,7 @@ router.get('/:blkid', function(clientReq, clientRes) {
     try{
         burst.getFullBlock(clientReq.params['blkid'], function(respond){
            clientRes.send(JSON.stringify(respond));
-        }, false);
+        });
     }
     catch(ex){
         console.log(jsonFormat.render(ex));
