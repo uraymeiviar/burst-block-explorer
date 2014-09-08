@@ -431,7 +431,7 @@ function getBlocksGeneratedByAccountLoop(accId, queryTimestamp, count, target, d
                 }
                 if(target.length < count){
                     if(queryTimestamp > 0 ){
-                        var nextTimestamp =  queryTimestamp - 60*30;
+                        var nextTimestamp =  queryTimestamp - 60*60*12;
                         if(nextTimestamp < 0){
                             nextTimestamp = 0;
                         }
@@ -470,7 +470,7 @@ function getBlocksGeneratedByAccount(accId, count, target, done, useCache){
         return;
     }
     var recentBlockTimestamp = blockchainData.lastBlock.timestamp;
-    var queryTimestamp = recentBlockTimestamp - 60*30;//(60*60*24*7);
+    var queryTimestamp = recentBlockTimestamp - 60*60;//(60*60*24*7);
     if(queryTimestamp < 0 ){
         queryTimestamp = 0;
     }
@@ -486,7 +486,7 @@ function getBlocksGeneratedByAccount(accId, count, target, done, useCache){
                             target.push(JSON.parse(blkJson));
                         }
                         callback();
-                    },useCache);
+                    },true);
                 },
                 function(err){
                     done();
@@ -514,7 +514,7 @@ function getRecentTxByAccountLoop(accId, queryTimestamp, count, target, done){
                 }
                 if(target.length < count){
                     if(queryTimestamp > 0 ){
-                        var nextTimestamp =  queryTimestamp - 60*30;
+                        var nextTimestamp =  queryTimestamp - 60*60*12;
                         if(nextTimestamp < 0){
                             nextTimestamp = 0;
                         }
@@ -552,7 +552,7 @@ function getRecentTxByAccount(accId, count, target, done, useCache){
         return;
     }
     var recentBlockTimestamp = blockchainData.lastBlock.timestamp;
-    var queryTimestamp = recentBlockTimestamp - 60*30;
+    var queryTimestamp = recentBlockTimestamp - 60*60;
     if(queryTimestamp < 0 ){
         queryTimestamp = 0;
     }
@@ -568,7 +568,7 @@ function getRecentTxByAccount(accId, count, target, done, useCache){
                             target.push(JSON.parse(txJson));
                         }
                         callback();
-                    },useCache);
+                    },true);
                 },
                 function(err){
                     done();
