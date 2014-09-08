@@ -514,7 +514,7 @@ function getRecentTxByAccountLoop(accId, queryTimestamp, count, target, done){
                 }
                 if(target.length < count){
                     if(queryTimestamp > 0 ){
-                        var nextTimestamp =  queryTimestamp - 60;
+                        var nextTimestamp =  queryTimestamp - 60*30;
                         if(nextTimestamp < 0){
                             nextTimestamp = 0;
                         }
@@ -552,7 +552,7 @@ function getRecentTxByAccount(accId, count, target, done, useCache){
         return;
     }
     var recentBlockTimestamp = blockchainData.lastBlock.timestamp;
-    var queryTimestamp = recentBlockTimestamp - 60;
+    var queryTimestamp = recentBlockTimestamp - 60*30;
     if(queryTimestamp < 0 ){
         queryTimestamp = 0;
     }
